@@ -16,9 +16,10 @@ main {
     background-color: #f7f7f7;
     border-bottom: 1px solid #d6d5d5;
     justify-content: flex-end;
-    height: 3.5rem;
+    height: 5rem;
     display: flex;
     align-items: center;
+    box-shadow: revert;
 }
 
     .top-row ::deep a, .top-row ::deep .btn-link {
@@ -71,8 +72,8 @@ main {
     }
 
     .top-row, article {
-        padding-left: 2rem !important;
-        padding-right: 1.5rem !important;
+        /*padding-left: 2rem !important;*/
+        /*padding-right: 1.5rem !important;*/
     }
 }
 
@@ -88,9 +89,25 @@ main {
     z-index: 1000;
 }
 
-    #blazor-error-ui .dismiss {
-        cursor: pointer;
-        position: absolute;
-        right: 0.75rem;
-        top: 0.5rem;
-    }
+#blazor-error-ui .dismiss {
+    cursor: pointer;
+    position: absolute;
+    right: 0.75rem;
+    top: 0.5rem;
+}
+
+.message {
+    margin-top: 15px;
+}
+
+.fondo {
+    background-color: #faf3e0;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    overflow: auto;
+    border-bottom: 20px solid #faf3e0;
+}
