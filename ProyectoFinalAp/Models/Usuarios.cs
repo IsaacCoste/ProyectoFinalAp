@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ProyectoFinalAp.Models;
 
-public class Usuario
+public class Usuarios
 {
     [Key]
     public int UsuarioId { get; set; }
@@ -15,7 +15,7 @@ public class Usuario
     public string Nombre { get; set; } = string.Empty;
     public DateTime FechaRegistro { get; set; }
     [ForeignKey("UsuarioId")]
-    public virtual ICollection<Cuenta> Cuentas { get; set; } = new List<Cuenta>();
+    public virtual ICollection<Transacciones> Transacciones { get; set; } = new List<Transacciones>();
     [ForeignKey("UsuarioId")]
-    public virtual ICollection<Presupuesto> Presupuestos { get; set; } = new List<Presupuesto>();
+    public virtual ICollection<Presupuestos> Presupuestos { get; set; } = new List<Presupuestos>();
 }
