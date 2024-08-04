@@ -3,9 +3,6 @@
 
 
 <div class="page fondo">
-    @* <div class="sidebar">
-    <NavMenu />
-    </div>  *@
 
     <main>
         <div class="top-row px-4">
@@ -16,6 +13,11 @@
                 <a href="/"><h5 class="message"><strong>Sistema de Finanzas</strong></h5></a>
 
             </div>
+            <AuthorizeView Roles="Clientes">
+                <div class="top-row px-4">
+                    <a href="/" class="btn btn-danger"><i class="fas fa-plus"></i>Cerrar Sesi&oacute;n</a>
+                </div>
+            </AuthorizeView>
         </div>
 
         <article class="content ">
