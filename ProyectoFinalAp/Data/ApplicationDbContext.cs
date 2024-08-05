@@ -10,12 +10,11 @@ public partial class ApplicationDbContext : IdentityDbContext<ApplicationUser>
         : base(options)
     {
     }
-    public DbSet<Cuenta> cuentas { get; set; }
-    public DbSet<Ingreso> ingresos { get; set; }
-    public DbSet<Gasto> gastos { get; set; }
-    public DbSet<Presupuesto> presupuestos { get; set; }
-    public DbSet<DetalleGastoPresupuesto> detalleGastoPresupuestos { get; set; }
-    public DbSet<Usuario> usuarios { get; set; }
+    public DbSet<Categorias> Categorias { get; set; }
+    public DbSet<Transacciones> Transacciones { get; set; }
+    public DbSet<Presupuestos> Presupuestos { get; set; }
+    public DbSet<DetalleGastoPresupuestos> DetalleGastoPresupuestos { get; set; }
+    public DbSet<Usuarios> Usuarios { get; set; }
 
 //    public virtual DbSet<AspNetRole> AspNetRoles { get; set; }
 
