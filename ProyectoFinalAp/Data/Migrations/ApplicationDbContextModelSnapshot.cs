@@ -220,35 +220,28 @@ namespace ProyectoFinalAp.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("ProyectoFinalAp.Models.Cuenta", b =>
+            modelBuilder.Entity("ProyectoFinalAp.Models.Categorias", b =>
                 {
-                    b.Property<int>("CuentaId")
+                    b.Property<int>("CategoriaId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CuentaId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CategoriaId"));
 
-                    b.Property<string>("Descripcion")
+                    b.Property<string>("Nombre")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("FechaCreacion")
-                        .HasColumnType("datetime2");
+                    b.Property<string>("Tipo")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<float>("Saldo")
-                        .HasColumnType("real");
+                    b.HasKey("CategoriaId");
 
-                    b.Property<int>("UsuarioId")
-                        .HasColumnType("int");
-
-                    b.HasKey("CuentaId");
-
-                    b.HasIndex("UsuarioId");
-
-                    b.ToTable("cuentas");
+                    b.ToTable("Categorias");
                 });
 
-            modelBuilder.Entity("ProyectoFinalAp.Models.DetalleGastoPresupuesto", b =>
+            modelBuilder.Entity("ProyectoFinalAp.Models.DetalleGastoPresupuestos", b =>
                 {
                     b.Property<int>("DetalleGastoId")
                         .ValueGeneratedOnAdd()
@@ -269,70 +262,17 @@ namespace ProyectoFinalAp.Migrations
                     b.Property<int>("PresupuestoId")
                         .HasColumnType("int");
 
+                    b.Property<float>("TotalGastos")
+                        .HasColumnType("real");
+
                     b.HasKey("DetalleGastoId");
 
                     b.HasIndex("PresupuestoId");
 
-                    b.ToTable("detalleGastoPresupuestos");
+                    b.ToTable("DetalleGastoPresupuestos");
                 });
 
-            modelBuilder.Entity("ProyectoFinalAp.Models.Gasto", b =>
-                {
-                    b.Property<int>("GastoId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("GastoId"));
-
-                    b.Property<int>("CuentaId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Descripcion")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("Fecha")
-                        .HasColumnType("datetime2");
-
-                    b.Property<float>("Monto")
-                        .HasColumnType("real");
-
-                    b.HasKey("GastoId");
-
-                    b.HasIndex("CuentaId");
-
-                    b.ToTable("gastos");
-                });
-
-            modelBuilder.Entity("ProyectoFinalAp.Models.Ingreso", b =>
-                {
-                    b.Property<int>("IngresoId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IngresoId"));
-
-                    b.Property<int>("CuentaId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Descripcion")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("Fecha")
-                        .HasColumnType("datetime2");
-
-                    b.Property<float>("Monto")
-                        .HasColumnType("real");
-
-                    b.HasKey("IngresoId");
-
-                    b.HasIndex("CuentaId");
-
-                    b.ToTable("ingresos");
-                });
-
-            modelBuilder.Entity("ProyectoFinalAp.Models.Presupuesto", b =>
+            modelBuilder.Entity("ProyectoFinalAp.Models.Presupuestos", b =>
                 {
                     b.Property<int>("PresupuestoId")
                         .ValueGeneratedOnAdd()
@@ -353,9 +293,6 @@ namespace ProyectoFinalAp.Migrations
                     b.Property<float>("MontoAsignado")
                         .HasColumnType("real");
 
-                    b.Property<float>("TotalGastos")
-                        .HasColumnType("real");
-
                     b.Property<int>("UsuarioId")
                         .HasColumnType("int");
 
@@ -363,10 +300,47 @@ namespace ProyectoFinalAp.Migrations
 
                     b.HasIndex("UsuarioId");
 
-                    b.ToTable("presupuestos");
+                    b.ToTable("Presupuestos");
                 });
 
-            modelBuilder.Entity("ProyectoFinalAp.Models.Usuario", b =>
+            modelBuilder.Entity("ProyectoFinalAp.Models.Transacciones", b =>
+                {
+                    b.Property<int>("TransaccionId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TransaccionId"));
+
+                    b.Property<int>("CategoriaId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Descripción")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("Fecha")
+                        .HasColumnType("datetime2");
+
+                    b.Property<float>("Monto")
+                        .HasColumnType("real");
+
+                    b.Property<string>("Tipo")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("UsuarioId")
+                        .HasColumnType("int");
+
+                    b.HasKey("TransaccionId");
+
+                    b.HasIndex("CategoriaId");
+
+                    b.HasIndex("UsuarioId");
+
+                    b.ToTable("Transacciones");
+                });
+
+            modelBuilder.Entity("ProyectoFinalAp.Models.Usuarios", b =>
                 {
                     b.Property<int>("UsuarioId")
                         .ValueGeneratedOnAdd()
@@ -391,7 +365,7 @@ namespace ProyectoFinalAp.Migrations
 
                     b.HasKey("UsuarioId");
 
-                    b.ToTable("usuarios");
+                    b.ToTable("Usuarios");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -445,20 +419,9 @@ namespace ProyectoFinalAp.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("ProyectoFinalAp.Models.Cuenta", b =>
+            modelBuilder.Entity("ProyectoFinalAp.Models.DetalleGastoPresupuestos", b =>
                 {
-                    b.HasOne("ProyectoFinalAp.Models.Usuario", "Usuario")
-                        .WithMany("Cuentas")
-                        .HasForeignKey("UsuarioId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Usuario");
-                });
-
-            modelBuilder.Entity("ProyectoFinalAp.Models.DetalleGastoPresupuesto", b =>
-                {
-                    b.HasOne("ProyectoFinalAp.Models.Presupuesto", "Presupuesto")
+                    b.HasOne("ProyectoFinalAp.Models.Presupuestos", "Presupuesto")
                         .WithMany("DetallesGastosPresupuesto")
                         .HasForeignKey("PresupuestoId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -467,31 +430,9 @@ namespace ProyectoFinalAp.Migrations
                     b.Navigation("Presupuesto");
                 });
 
-            modelBuilder.Entity("ProyectoFinalAp.Models.Gasto", b =>
+            modelBuilder.Entity("ProyectoFinalAp.Models.Presupuestos", b =>
                 {
-                    b.HasOne("ProyectoFinalAp.Models.Cuenta", "Cuenta")
-                        .WithMany("Gastos")
-                        .HasForeignKey("CuentaId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Cuenta");
-                });
-
-            modelBuilder.Entity("ProyectoFinalAp.Models.Ingreso", b =>
-                {
-                    b.HasOne("ProyectoFinalAp.Models.Cuenta", "Cuenta")
-                        .WithMany("Ingresos")
-                        .HasForeignKey("CuentaId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Cuenta");
-                });
-
-            modelBuilder.Entity("ProyectoFinalAp.Models.Presupuesto", b =>
-                {
-                    b.HasOne("ProyectoFinalAp.Models.Usuario", "Usuario")
+                    b.HasOne("ProyectoFinalAp.Models.Usuarios", "Usuario")
                         .WithMany("Presupuestos")
                         .HasForeignKey("UsuarioId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -500,23 +441,35 @@ namespace ProyectoFinalAp.Migrations
                     b.Navigation("Usuario");
                 });
 
-            modelBuilder.Entity("ProyectoFinalAp.Models.Cuenta", b =>
+            modelBuilder.Entity("ProyectoFinalAp.Models.Transacciones", b =>
                 {
-                    b.Navigation("Gastos");
+                    b.HasOne("ProyectoFinalAp.Models.Categorias", "Categoria")
+                        .WithMany()
+                        .HasForeignKey("CategoriaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.Navigation("Ingresos");
+                    b.HasOne("ProyectoFinalAp.Models.Usuarios", "Usuario")
+                        .WithMany("Transacciones")
+                        .HasForeignKey("UsuarioId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Categoria");
+
+                    b.Navigation("Usuario");
                 });
 
-            modelBuilder.Entity("ProyectoFinalAp.Models.Presupuesto", b =>
+            modelBuilder.Entity("ProyectoFinalAp.Models.Presupuestos", b =>
                 {
                     b.Navigation("DetallesGastosPresupuesto");
                 });
 
-            modelBuilder.Entity("ProyectoFinalAp.Models.Usuario", b =>
+            modelBuilder.Entity("ProyectoFinalAp.Models.Usuarios", b =>
                 {
-                    b.Navigation("Cuentas");
-
                     b.Navigation("Presupuestos");
+
+                    b.Navigation("Transacciones");
                 });
 #pragma warning restore 612, 618
         }
