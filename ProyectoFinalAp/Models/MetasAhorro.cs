@@ -4,6 +4,7 @@ namespace ProyectoFinalAp.Models;
 
 public class MetasAhorro
 {
+    [Key]
     public int MetaDeAhorroId { get; set; }
     public int UsuarioId { get; set; }
     [Required(ErrorMessage = "Ingrese la Descripción.")]
