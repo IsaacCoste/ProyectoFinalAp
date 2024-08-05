@@ -6,6 +6,8 @@
 @using Microsoft.AspNetCore.Identity
 @using Microsoft.AspNetCore.WebUtilities
 @using ProyectoFinalAp.Data
+@using Models
+@using Services
 
 @inject UserManager<ApplicationUser> UserManager
 @inject IUserStore<ApplicationUser> UserStore
@@ -14,6 +16,7 @@
 @inject ILogger<Register> Logger
 @inject NavigationManager NavigationManager
 @inject IdentityRedirectManager RedirectManager
+@inject UsuariosService usuarioService
 
 <PageTitle>Registro</PageTitle>
 
@@ -29,6 +32,11 @@
                     </div>
                     <div class="card-body">
                         <ValidationSummary class="text-danger" role="alert" />
+                        <div class="form-floating mb-3">
+                            <InputText @bind-Value="Input.Nombre" class="form-control" autocomplete="name" aria-required="true" placeholder="Juan Peréz" />
+                            <label for="Nombre">Nombre</label>
+                            <ValidationMessage For="() => Input.Nombre" class="text-danger" />
+                        </div>
                         <div class="form-floating mb-3">
                             <InputText @bind-Value="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
                             <label for="email">Email</label>
@@ -72,6 +80,14 @@
     public async Task RegisterUser(EditContext editContext)
     {
         var user = CreateUser();
+
+        var usuarios = new Usuarios
+            {
+                UserId = user.Id,
+                Nombre = Input.Nombre,
+                RolId = "1"
+            };
+        await usuarioService.Guardar(usuarios);
 
         await UserStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
         var emailStore = GetEmailStore();
@@ -130,6 +146,10 @@
 
     private sealed class InputModel
     {
+        [Required]
+        [Display(Name = "Nombre")]
+        public string Nombre { get; set; } = "";
+
         [Required]
         [EmailAddress]
         [Display(Name = "Email")]
