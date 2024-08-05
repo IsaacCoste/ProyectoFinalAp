@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using ProyectoFinalAp.Components;
 using ProyectoFinalAp.Components.Account;
 using ProyectoFinalAp.Data;
+using ProyectoFinalAp.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,6 +16,9 @@ builder.Services.AddCascadingAuthenticationState();
 builder.Services.AddScoped<IdentityUserAccessor>();
 builder.Services.AddScoped<IdentityRedirectManager>();
 builder.Services.AddScoped<AuthenticationStateProvider, IdentityRevalidatingAuthenticationStateProvider>();
+
+builder.Services.AddScoped<UsuariosService>();
+builder.Services.AddBlazorBootstrap();
 
 builder.Services.AddAuthentication(options =>
     {
