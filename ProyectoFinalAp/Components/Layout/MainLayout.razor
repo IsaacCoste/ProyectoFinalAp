@@ -2,7 +2,6 @@
 @inherits LayoutComponentBase
 @inject NavigationManager NavigationManager
 
-
 <div class="page fondo">
 
     <main>
@@ -14,7 +13,10 @@
                 <a href="/"><h5 class="message"><strong>Sistema de Finanzas</strong></h5></a>
 
             </div>
-            <AuthorizeView Roles="Clientes">
+            <i class="bi bi-person px-1" style="font-size: 1.5rem;"></i>            <AuthorizeView>
+                @context.User.Identity?.Name
+            </AuthorizeView>
+            <AuthorizeView Roles="Usuario">
                 <div class="top-row px-2">
                     <form action="Account/Logout" method="post">
                         <AntiforgeryToken />
