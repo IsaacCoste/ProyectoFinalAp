@@ -1,0 +1,77 @@
+﻿@page "/usuarios/eliminar/{UsuarioId:int}"
+@inject UsuariosService usuarioService
+@inject NavigationManager navigation
+@rendermode InteractiveServer
+
+<div class="container">
+    <div class="card-header bg-warning text-center">
+        <h1>Eliminar Usuario</h1>
+    </div>
+    <div class="card-body">
+        <h5 class="card-title">Detalles del Usuario</h5>
+
+        <dl class="row">
+            <div class="row">
+                <dt class="col-sm-3">UsuarioId:</dt>
+                <dd class="col-sm-9">@usuario.UsuarioId</dd>
+
+                <dt class="col-sm-3">UserId:</dt>
+                <dd class="col-sm-9">@usuario.UserId</dd>
+            </div>
+            <div class="row">
+                <dt class="col-sm-3">RolId:</dt>
+                <dd class="col-sm-9">@usuario.RolId</dd>
+
+                <dt class="col-sm-3">Nombre:</dt>
+                <dd class="col-sm-9">
+                    @usuario.Nombre
+                </dd>
+
+                <dt class="col-sm-3">Fecha de Registro:</dt>
+                <dd class="col-sm-9">
+                    @usuario.FechaRegistro.ToString("dd/MM/yyyy")
+                </dd>
+            </div>
+        </dl>
+        <div class="card-footer text-center">
+            <button type="button" class="btn btn-danger" @onclick="Eliminar">Eliminar <i class="bi bi-trash3" /></button>
+            <button type="button" class="btn btn-outline-primary" @onclick="Volver">Volver <i class="bi bi-arrow-return-left" /></button>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public int UsuarioId { get; set; }
+    public Usuarios usuario { get; set; } = new Usuarios();
+    public List<ToastMessage> messages = new List<ToastMessage>();
+    public void Notificacion(ToastType toastType, string message) => messages.Add(ShowToast(toastType, message));
+    private ToastMessage ShowToast(ToastType toastType, string message)
+    {
+        var mensaje = new ToastMessage()
+            {
+                Type = toastType,
+                Message = $"{message}. El {DateTime.Now.ToString("dd/MM/yyyy")} a las {DateTime.Now.ToString("hh:mm tt")}",
+            };
+        toastService.Notify(mensaje);
+        return mensaje;
+    }
+    protected override async Task OnInitializedAsync()
+    {
+        usuario = await usuarioService.Buscar(UsuarioId);
+    }
+
+    public async Task Eliminar()
+    {
+        await usuarioService.Eliminar(usuario);
+        Notificacion(ToastType.Warning, "Usuario eliminado");
+        await Task.Delay(2000);
+        await Volver();
+    }
+
+    public Task Volver()
+    {
+        navigation.NavigateTo("/usuarios/index");
+        return Task.CompletedTask;
+    }
+}
