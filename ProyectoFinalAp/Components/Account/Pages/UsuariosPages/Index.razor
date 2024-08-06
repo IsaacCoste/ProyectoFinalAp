@@ -1,0 +1,146 @@
+﻿@page "/usuarios/index/"
+@inject UsuariosService usuarioService
+@inject NavigationManager NavigationManager
+@rendermode InteractiveServer
+
+<div class="container">
+    <div class="card-header bg-warning text-center">
+        <h1>Lista de Usuarios</h1>
+    </div>
+    <div class="row">
+        <div class="col-md-3">
+            <label for="Filtro" class="form-label"><strong>Filtrar por:</strong></label>
+            <InputSelect id="filtro" class="form-select" @bind-Value="filtro">
+                <option value="" disabled>Seleccionar</option>
+                <option value="Id">UsuarioId</option>
+                <option value="UserId">UserId</option>
+                <option value="RolId">RolId</option>
+                <option value="Nombre">Nombre</option>
+                <option value="Fecha">Fecha</option>
+
+            </InputSelect>
+        </div>
+        <div class="col-md-6">
+            <label for="ValorFiltro" class="form-label"><strong>B&uacute;squeda:</strong></label>
+            <div class="input-group">
+                <input @bind="valorFiltro" class="form-control" placeholder="Buscar" />
+                <button @onclick="Buscar" class="btn btn-primary" type="button">
+                    <span class="bi bi-search"></span> Buscar
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="card-body">
+        <table class="table table-bordered miTabla">
+            <thead>
+                <tr>
+                    <th>UsuarioId</th>
+                    <th>UserId</th>
+                    <th>RolId</th>
+                    <th>Nombre</th>
+                    <th>Fecha</th>
+                    <th>Ver</th>
+                    <th>Editar</th>
+                    <th>Eliminar</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                @if (ListUsuarios.Any())
+                {
+                    @foreach (var usuario in ListUsuarios)
+                    {
+                        <tr>
+                            <td>@usuario.UsuarioId</td>
+                            <td>@usuario.UserId</td>
+                            <td>@usuario.RolId</td>
+                            <td>@usuario.Nombre</td>
+                            <td>@usuario.FechaRegistro</td>
+                            <td>
+                                <button type="button" class="btn btn-outline-info" @onclick="()=> IrAVer(usuario.UsuarioId)" data-bs-toggle="tooltip" data-bs-placement="top" title="Ver detalles">
+                                    <i class="bi bi-eye"></i>
+                                </button>
+                            </td>
+                            <td>
+                                <button type="button" class="btn btn-outline-warning" @onclick="()=> IrAEditar(usuario.UsuarioId)" data-bs-toggle="tooltip" data-bs-placement="top" title="Editar">
+                                    <i class="bi bi-pencil-square"></i>
+                                </button>
+                            </td>
+                            <td>
+                                <button type="button" class="btn btn-outline-danger" @onclick="()=> IrAEliminar(usuario.UsuarioId)" data-bs-toggle="tooltip" data-bs-placement="top" title="Eliminar">
+                                    <i class="bi bi-trash3-fill"></i>
+                                </button>
+
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="7" class="text-center"> <label>No hay Usuarios disponibles</label> </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <div class="card-footer">
+        <p><strong>Total de Usuarios:</strong> @ListUsuarios.Count</p>
+    </div>
+</div>
+
+@code {
+    public Usuarios Usuario { get; set; } = new Usuarios();
+    public List<Usuarios> ListUsuarios { get; set; } = new List<Usuarios>();
+    private string filtro = "";
+    private string valorFiltro = "";
+    protected override async Task OnInitializedAsync()
+    {
+        ListUsuarios = await usuarioService.Listar(u => true);
+    }
+    private async Task Buscar()
+    {
+        if (!string.IsNullOrWhiteSpace(valorFiltro))
+        {
+            if (filtro == "Id" && int.TryParse(valorFiltro, out int UsuarioId))
+            {
+                ListUsuarios = await usuarioService.Listar(t => t.UsuarioId == UsuarioId);
+            }
+            else if (filtro == "UserId")
+            {
+                ListUsuarios = await usuarioService.Listar(t => t.UserId.ToLower().Contains(valorFiltro.ToLower()));
+            }
+            else if (filtro == "RolId")
+            {
+                ListUsuarios = await usuarioService.Listar(t => t.RolId.ToLower().Contains(valorFiltro.ToLower()));
+            }
+            else if (filtro == "Nombre")
+            {
+                ListUsuarios = await usuarioService.Listar(t => t.Nombre.ToLower().Contains(valorFiltro.ToLower()));
+            }
+            else if (filtro == "Fecha" && DateTime.TryParse(valorFiltro, out DateTime Fecha))
+            {
+                ListUsuarios = await usuarioService.Listar(t => t.FechaRegistro == Fecha);
+            }
+        }
+        else
+        {
+            ListUsuarios = await usuarioService.Listar(u => true);
+        }
+    }
+    public Task IrAVer(int id)
+    {
+        NavigationManager.NavigateTo($"/usuarios/ver/{id}");
+        return Task.CompletedTask;
+    }
+    public Task IrAEditar(int id)
+    {
+        NavigationManager.NavigateTo($"/usuarios/editar/{id}");
+        return Task.CompletedTask;
+    }
+    public Task IrAEliminar(int id)
+    {
+        NavigationManager.NavigateTo($"/usuarios/eliminar/{id}");
+        return Task.CompletedTask;
+    }
+}
