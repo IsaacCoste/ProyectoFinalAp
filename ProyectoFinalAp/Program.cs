@@ -18,6 +18,7 @@ builder.Services.AddScoped<IdentityRedirectManager>();
 builder.Services.AddScoped<AuthenticationStateProvider, IdentityRevalidatingAuthenticationStateProvider>();
 
 builder.Services.AddScoped<UsuariosService>();
+builder.Services.AddScoped<CategoriasService>();
 builder.Services.AddBlazorBootstrap();
 
 builder.Services.AddAuthentication(options =>
