@@ -3,6 +3,8 @@
 @inject NavigationManager navigation
 @rendermode InteractiveServer
 
+<PageTitle>Edit Usuarios</PageTitle>
+
 <EditForm Model="usuario" OnValidSubmit="Modificar">
     <DataAnnotationsValidator />
     <div class="container text-center">
@@ -38,9 +40,7 @@
             </div>
         </div>
         <div class="card-footer text-center">
-            <button type="submit" class="btn btn-success">
-                Modificar <i class="bi bi-floppy-fill" />
-            </button>
+            <div class="btn btn-success">Modificar <i class="bi bi-floppy-fill" /></div>
             <div class="btn btn-outline-primary" @onclick="Volver">Volver <i class="bi bi-arrow-return-left" /></div>
 
         </div>
