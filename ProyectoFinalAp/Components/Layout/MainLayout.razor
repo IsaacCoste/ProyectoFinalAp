@@ -21,9 +21,10 @@
                 <div class="top-row px-2">
                     <form action="Account/Logout" method="post">
                         <AntiforgeryToken />
-                        <input type="hidden" name="ReturnUrl" value="@currentUrl" />
+                        <input type="hidden" name="ReturnUrl" value="" />
                         <button type="submit" class="btn btn-danger"><i class="fas fa-plus"></i>Logout</button>
                     </form>
+
                 </div>
             </AuthorizeView>
             <Toasts class="p-3" AutoHide="true" Delay="6000" Placement="ToastsPlacement.TopRight" />
@@ -53,6 +54,13 @@
     private void OnLocationChanged(object? sender, LocationChangedEventArgs e)
     {
         currentUrl = NavigationManager.ToBaseRelativePath(e.Location);
+
+        // Optional: Automatically navigate to the login page if the user is logged out
+        if (currentUrl == "Account/Logout")
+        {
+            NavigationManager.NavigateTo("/");
+        }
+
         StateHasChanged();
     }
 
