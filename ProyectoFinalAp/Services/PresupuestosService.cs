@@ -18,7 +18,7 @@ public class PresupuestosService(ApplicationDbContext contexto)
     {
         _contexto.Update(presupuesto);
         var modifico = await _contexto.SaveChangesAsync() > 0;
-        _contexto.Entry(presupuesto).State = EntityState.Modified;
+        _contexto.Entry(presupuesto).State = EntityState.Detached;
         return modifico;
     }
     public async Task<bool> Existe(int presupuestoId)
@@ -39,19 +39,19 @@ public class PresupuestosService(ApplicationDbContext contexto)
         else
             return await Modificar(presupuesto);
     }
-    public async Task<bool> Eliminar(Presupuestos presupuesto)
+    public async Task<bool> Eliminar(int id)
     {
         var cantidad = await _contexto.Presupuestos
-            .Where(a => a.PresupuestoId == presupuesto.PresupuestoId)
+            .Where(a => a.PresupuestoId == id)
             .ExecuteDeleteAsync();
         return cantidad > 0;
     }
-    public async Task<Presupuestos?> Buscar(int presupuestoId)
+    public async Task<Presupuestos?> Buscar(int id)
     {
         return await _contexto.Presupuestos
             .Include(p => p.DetallesGastosPresupuesto)
             .AsNoTracking()
-            .FirstOrDefaultAsync(a => a.PresupuestoId == presupuestoId);
+            .FirstOrDefaultAsync(a => a.PresupuestoId == id);
     }
     public async Task<List<Presupuestos>> Listar(Expression<Func<Presupuestos, bool>> criterio)
     {
