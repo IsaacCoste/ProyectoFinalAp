@@ -55,19 +55,19 @@
                             <td>@usuario.UserId</td>
                             <td>@usuario.RolId</td>
                             <td>@usuario.Nombre</td>
-                            <td>@usuario.FechaRegistro</td>
+                            <td>@usuario.FechaRegistro.ToString("dd/MM/yyyy")</td>
                             <td>
-                                <button type="button" class="btn btn-outline-info" @onclick="()=> IrAVer(usuario.UsuarioId)" data-bs-toggle="tooltip" data-bs-placement="top" title="Ver detalles">
+                                <button type="button" class="btn btn-outline-info" @onclick="()=> Ver(usuario.UsuarioId)" data-bs-toggle="tooltip" data-bs-placement="top" title="Ver detalles">
                                     <i class="bi bi-eye"></i>
                                 </button>
                             </td>
                             <td>
-                                <button type="button" class="btn btn-outline-warning" @onclick="()=> IrAEditar(usuario.UsuarioId)" data-bs-toggle="tooltip" data-bs-placement="top" title="Editar">
+                                <button type="button" class="btn btn-outline-warning" @onclick="()=> Editar(usuario.UsuarioId)" data-bs-toggle="tooltip" data-bs-placement="top" title="Editar">
                                     <i class="bi bi-pencil-square"></i>
                                 </button>
                             </td>
                             <td>
-                                <button type="button" class="btn btn-outline-danger" @onclick="()=> IrAEliminar(usuario.UsuarioId)" data-bs-toggle="tooltip" data-bs-placement="top" title="Eliminar">
+                                <button type="button" class="btn btn-outline-danger" @onclick="()=> Eliminar(usuario.UsuarioId)" data-bs-toggle="tooltip" data-bs-placement="top" title="Eliminar">
                                     <i class="bi bi-trash3-fill"></i>
                                 </button>
 
@@ -128,17 +128,17 @@
             ListUsuarios = await usuarioService.Listar(u => true);
         }
     }
-    public Task IrAVer(int id)
+    public Task Ver(int id)
     {
         NavigationManager.NavigateTo($"/usuarios/ver/{id}");
         return Task.CompletedTask;
     }
-    public Task IrAEditar(int id)
+    public Task Editar(int id)
     {
         NavigationManager.NavigateTo($"/usuarios/editar/{id}");
         return Task.CompletedTask;
     }
-    public Task IrAEliminar(int id)
+    public Task Eliminar(int id)
     {
         NavigationManager.NavigateTo($"/usuarios/eliminar/{id}");
         return Task.CompletedTask;
