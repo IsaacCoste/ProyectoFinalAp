@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ProyectoFinalAp.Data;
 
@@ -11,9 +12,11 @@ using ProyectoFinalAp.Data;
 namespace ProyectoFinalAp.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240808055024_Actualizando")]
+    partial class Actualizando
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -290,7 +293,7 @@ namespace ProyectoFinalAp.Migrations
                     b.Property<float>("MontoAsignado")
                         .HasColumnType("real");
 
-                    b.Property<int?>("UsuarioId")
+                    b.Property<int>("UsuarioId")
                         .HasColumnType("int");
 
                     b.HasKey("PresupuestoId");
@@ -431,7 +434,9 @@ namespace ProyectoFinalAp.Migrations
                 {
                     b.HasOne("ProyectoFinalAp.Models.Usuarios", "Usuario")
                         .WithMany("Presupuestos")
-                        .HasForeignKey("UsuarioId");
+                        .HasForeignKey("UsuarioId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Usuario");
                 });
