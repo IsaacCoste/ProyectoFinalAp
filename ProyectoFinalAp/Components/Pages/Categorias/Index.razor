@@ -1,0 +1,127 @@
+﻿@page "/categorias/index"
+
+@inject CategoriasService categoriasService
+@inject NavigationManager navigation
+@rendermode InteractiveServer
+
+<PageTitle>Index Categorias</PageTitle>
+
+<div class="container">
+    <div class="card-header bg-warning text-center">
+        <h1>Lista de Usuarios</h1>
+    </div>
+    <div class="row mb-3">
+        <div class="col-md-3">
+            <label for="Filtro" class="form-label"><strong>Filtrar por:</strong></label>
+            <InputSelect id="filtro" class="form-select" @bind-Value="filtro">
+                <option value="" disabled>Seleccionar</option>
+                <option value="Id">CategoriaId</option>
+                <option value="Nombre">Nombre</option>
+                <option value="Tipo">Tipo</option>
+            </InputSelect>
+        </div>
+        <div class="col-md-6">
+            <label for="ValorFiltro" class="form-label"><strong>B&uacute;squeda:</strong></label>
+            <div class="input-group">
+                <input @bind="valorFiltro" class="form-control" placeholder="Buscar" />
+                <button @onclick="Buscar" class="btn btn-primary" type="button">
+                    <span class="bi bi-search"></span> Buscar
+                </button>
+            </div>
+        </div>
+        <div class="col-md-3 d-flex align-items-end justify-content-end">
+            <button class="btn btn-primary" @onclick="Crear">Crear</button>
+        </div>
+    </div>
+    <div class="card-body">
+        <table class="table table-bordered miTabla">
+            <thead>
+                <tr>
+                    <th>CategoriaId</th>
+                    <th>Nombre</th>
+                    <th>Tipo</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (ListCategorias.Any())
+                {
+                    @foreach (var categoria in ListCategorias)
+                    {
+                        <tr>
+                            <td>@categoria.CategoriaId</td>
+                            <td>@categoria.Nombre</td>
+                            <td>@categoria.Tipo</td>
+                            <td>
+                                <button type="button" class="btn btn-outline-warning" @onclick="()=> Editar(categoria.CategoriaId)" data-bs-toggle="tooltip" data-bs-placement="top" title="Editar">
+                                    <i class="bi bi-pencil-square"></i>
+                                </button>
+                            </td>
+                            <td>
+                                <button type="button" class="btn btn-outline-danger" @onclick="()=> Eliminar(categoria.CategoriaId)" data-bs-toggle="tooltip" data-bs-placement="top" title="Eliminar">
+                                    <i class="bi bi-trash3-fill"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="7" class="text-center"> <label>No hay Categorias disponibles</label> </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <div class="card-footer">
+        <p><strong>Total de Usuarios:</strong> @ListCategorias.Count</p>
+    </div>
+</div>
+
+
+@code {
+    public Categorias categoria { get; set; } = new Categorias();
+    public List<Categorias> ListCategorias { get; set; } = new List<Categorias>();
+    private string filtro = "";
+    private string valorFiltro = "";
+    protected override async Task OnInitializedAsync()
+    {
+        ListCategorias = await categoriasService.Listar(c => true);
+    }
+    private async Task Buscar()
+    {
+        if (!string.IsNullOrWhiteSpace(valorFiltro))
+        {
+            if (filtro == "Id" && int.TryParse(valorFiltro, out int CategoriaId))
+            {
+                ListCategorias = await categoriasService.Listar(t => t.CategoriaId == CategoriaId);
+            }
+            else if (filtro == "Nombre")
+            {
+                ListCategorias = await categoriasService.Listar(t => t.Nombre.ToLower().Contains(valorFiltro.ToLower()));
+            }
+            else if (filtro == "Tipo")
+            {
+                ListCategorias = await categoriasService.Listar(t => t.Tipo.ToLower().Contains(valorFiltro.ToLower()));
+            }
+        }
+        else
+        {
+            ListCategorias = await categoriasService.Listar(u => true);
+        }
+    }
+    public void Crear()
+    {
+        navigation.NavigateTo("/categorias/create");
+    }
+    public Task Editar(int id)
+    {
+        navigation.NavigateTo($"/categorias/edit/{id}");
+        return Task.CompletedTask;
+    }
+    public Task Eliminar(int id)
+    {
+        navigation.NavigateTo($"/categorias/delete/{id}");
+        return Task.CompletedTask;
+    }
+}

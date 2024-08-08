@@ -1,38 +1,29 @@
-﻿@page "/usuarios/eliminar/{UsuarioId:int}"
-@inject UsuariosService usuarioService
+﻿@page "/categorias/delete/{CategoriaId:int}"
+
+@inject CategoriasService categoriasService
 @inject NavigationManager navigation
 @rendermode InteractiveServer
 
-<PageTitle>Delete Usuarios</PageTitle>
+<PageTitle>Delete Categorias</PageTitle>
 
 <div class="container">
     <div class="card-header bg-warning text-center">
-        <h1>Eliminar Usuario</h1>
+        <h1>Eliminar Categoria</h1>
     </div>
     <div class="card-body">
-        <h5 class="card-title">Detalles del Usuario</h5>
-
+        <h5 class="card-title">Detalles de la Categoria</h5>
         <dl class="row">
             <div class="row">
-                <dt class="col-sm-3">UsuarioId:</dt>
-                <dd class="col-sm-9">@usuario.UsuarioId</dd>
-
-                <dt class="col-sm-3">UserId:</dt>
-                <dd class="col-sm-9">@usuario.UserId</dd>
+                <dt class="col-sm-3">CategoriaId:</dt>
+                <dd class="col-sm-9">@categoria.CategoriaId</dd>
             </div>
             <div class="row">
-                <dt class="col-sm-3">RolId:</dt>
-                <dd class="col-sm-9">@usuario.RolId</dd>
-
                 <dt class="col-sm-3">Nombre:</dt>
-                <dd class="col-sm-9">
-                    @usuario.Nombre
-                </dd>
-
-                <dt class="col-sm-3">Fecha de Registro:</dt>
-                <dd class="col-sm-9">
-                    @usuario.FechaRegistro.ToString("dd/MM/yyyy")
-                </dd>
+                <dd class="col-sm-9">@categoria.Nombre</dd>
+            </div>
+            <div class="row">
+                <dt class="col-sm-3">Tipo:</dt>
+                <dd class="col-sm-9">@categoria.Tipo</dd>
             </div>
         </dl>
         <div class="card-footer text-center">
@@ -44,8 +35,8 @@
 
 @code {
     [Parameter]
-    public int UsuarioId { get; set; }
-    public Usuarios usuario { get; set; } = new Usuarios();
+    public int CategoriaId { get; set; }
+    public Categorias categoria { get; set; } = new Categorias();
     public List<ToastMessage> messages = new List<ToastMessage>();
     public void Notificacion(ToastType toastType, string message) => messages.Add(ShowToast(toastType, message));
     private ToastMessage ShowToast(ToastType toastType, string message)
@@ -60,20 +51,19 @@
     }
     protected override async Task OnInitializedAsync()
     {
-        usuario = await usuarioService.Buscar(UsuarioId);
+        categoria = await categoriasService.Buscar(CategoriaId);
     }
-
     public async Task Eliminar()
     {
-        await usuarioService.Eliminar(usuario);
-        Notificacion(ToastType.Warning, "Usuario eliminado");
+        await categoriasService.Eliminar(categoria);
+        Notificacion(ToastType.Warning, "Categoria eliminada");
         await Task.Delay(2000);
         await Volver();
     }
 
     public Task Volver()
     {
-        navigation.NavigateTo("/usuarios/index");
+        navigation.NavigateTo("/categorias/index");
         return Task.CompletedTask;
     }
 }

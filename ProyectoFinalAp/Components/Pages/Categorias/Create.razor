@@ -1,0 +1,81 @@
+﻿@page "/categorias/create"
+
+@inject CategoriasService categoriasService
+@inject NavigationManager navigation
+
+<PageTitle>Create Categoria</PageTitle>
+
+<EditForm Model="categoria" OnValidSubmit="Guardar" FormName="CategoriaForm">
+    <DataAnnotationsValidator />
+    <div class="container">
+        <div class="card-header bg-warning text-center">
+            <h1>Crear Categorias</h1>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <label>ID</label>
+                <InputNumber @bind-Value="categoria.CategoriaId" class="form-control" disabled />
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <label>Nombre</label>
+                <InputText @bind-Value="categoria.Nombre" class="form-control" />
+                <ValidationMessage For="@(() => categoria.Nombre)" />
+            </div>
+            <div class="col-md-4">
+                <label>Tipo</label>
+                <InputText @bind-Value="categoria.Tipo" class="form-control" />
+                <ValidationMessage For="@(() => categoria.Tipo)" />
+            </div>
+        </div>
+        <div class="card-footer text-center">
+            <button class="btn btn-success">Crear <i class="bi bi-floppy-fill" /></button>
+            <button type="button" class="btn btn-outline-primary" @onclick="Volver">Volver <i class="bi bi-arrow-return-left" /></button>
+        </div>
+    </div>
+</EditForm>
+
+@code {
+    public Categorias categoria { get; set; } = new Categorias();
+    public bool hayCategoria = false;
+    public List<ToastMessage> messages = new List<ToastMessage>();
+    public void Notificacion(ToastType toastType, string message) => messages.Add(ShowToast(toastType, message));
+    private ToastMessage ShowToast(ToastType toastType, string message)
+    {
+        var mensaje = new ToastMessage()
+            {
+                Type = toastType,
+                Message = $"{message}. El {DateTime.Now.ToString("dd/MM/yyyy")} a las {DateTime.Now.ToString("hh:mm tt")}",
+            };
+        toastService.Notify(mensaje);
+        return mensaje;
+    }
+
+    private async Task<bool> Validar()
+    {
+        hayCategoria = await categoriasService.Existe(categoria.CategoriaId, categoria.Nombre);
+        return !hayCategoria;
+    }
+    public async Task Guardar()
+    {
+        if (!await Validar())
+        {
+            Notificacion(ToastType.Warning, "Intente con otro nombre.");
+            return;
+        }
+        var guardo = await categoriasService.Guardar(categoria);
+        if (guardo)
+        {
+            Notificacion(ToastType.Warning, "Se Guardaron los datos correctamente.");
+            await Volver();
+        }
+        else
+            Notificacion(ToastType.Warning, "Ha ocurrido un error.");
+    }
+    public async Task Volver()
+    {
+        navigation.NavigateTo("/categorias/index");
+        await Task.CompletedTask;
+    }
+}

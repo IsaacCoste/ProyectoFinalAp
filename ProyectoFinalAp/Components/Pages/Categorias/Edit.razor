@@ -1,42 +1,33 @@
-﻿@page "/usuarios/editar/{UsuarioId:int}"
-@inject UsuariosService usuarioService
+﻿@page "/categorias/edit/{CategoriaId:int}"
+
+@inject CategoriasService categoriasService
 @inject NavigationManager navigation
 @rendermode InteractiveServer
 
-<PageTitle>Edit Usuarios</PageTitle>
+<PageTitle>Edit Categorias</PageTitle>
 
-<EditForm Model="usuario" OnValidSubmit="Modificar">
+<EditForm Model="categoria" OnValidSubmit="Modificar">
     <DataAnnotationsValidator />
     <div class="container">
         <div class="card-header bg-warning text-center">
-            <h1>Editar Usuarios</h1>
+            <h1>Editar Categoria</h1>
         </div>
         <div class="row">
             <div class="col-md-4">
                 <label>ID</label>
-                <InputNumber @bind-Value="usuario.UsuarioId" class="form-control" disabled />
-            </div>
-            <div class="col-md-4">
-                <label>UserId</label>
-                <InputText @bind-Value="usuario.UserId" class="form-control" disabled />
-                <ValidationMessage For="@(() => usuario.UserId)" />
-            </div>
-            <div class="col-md-4">
-                <label>RolId</label>
-                <InputText @bind-Value="usuario.RolId" class="form-control " disabled />
-                <ValidationMessage For="@(() => usuario.RolId)" />
+                <InputNumber @bind-Value="categoria.CategoriaId" class="form-control" disabled />
             </div>
         </div>
         <div class="row">
             <div class="col-md-4">
                 <label>Nombre</label>
-                <InputText @bind-Value="usuario.Nombre" class="form-control" />
-                <ValidationMessage For="@(() => usuario.Nombre)" />
+                <InputText @bind-Value="categoria.Nombre" class="form-control" />
+                <ValidationMessage For="@(() => categoria.Nombre)" />
             </div>
             <div class="col-md-4">
-                <label>Fecha</label>
-                <InputDate @bind-Value="usuario.FechaRegistro" class="form-control" />
-                <ValidationMessage For="@(() => usuario.FechaRegistro)" />
+                <label>Tipo</label>
+                <InputText @bind-Value="categoria.Tipo" class="form-control" />
+                <ValidationMessage For="@(() => categoria.Tipo)" />
             </div>
         </div>
         <div class="card-footer text-center">
@@ -49,10 +40,10 @@
 
 @code {
     [Parameter]
-    public int UsuarioId { get; set; }
-    public Usuarios usuario { get; set; } = new Usuarios();
-    public List<Usuarios> listUsuarios { get; set; } = new List<Usuarios>();
-    public bool hayUsuario = false;
+    public int CategoriaId { get; set; }
+    public Categorias categoria { get; set; } = new Categorias();
+    public List<Categorias> listCategorias { get; set; } = new List<Categorias>();
+    public bool hayCategoria = false;
     public List<ToastMessage> messages = new List<ToastMessage>();
     public void Notificacion(ToastType toastType, string message) => messages.Add(ShowToast(toastType, message));
     private ToastMessage ShowToast(ToastType toastType, string message)
@@ -67,14 +58,14 @@
     }
     protected override async Task OnInitializedAsync()
     {
-        usuario.UsuarioId = UsuarioId;
-        usuario = await usuarioService.Buscar(UsuarioId);
-        listUsuarios = await usuarioService.Listar(u => true);
+        categoria.CategoriaId = CategoriaId;
+        categoria = await categoriasService.Buscar(CategoriaId);
+        listCategorias = await categoriasService.Listar(c => true);
     }
     private async Task<bool> Validar()
     {
-        hayUsuario = await usuarioService.Existe(usuario.UsuarioId, usuario.Nombre);
-        return !hayUsuario;
+        hayCategoria = await categoriasService.Existe(categoria.CategoriaId, categoria.Nombre);
+        return !hayCategoria;
     }
     public async Task Modificar()
     {
@@ -83,7 +74,7 @@
             Notificacion(ToastType.Warning, "Intente con otro nombre.");
             return;
         }
-        var guardo = await usuarioService.Guardar(usuario);
+        var guardo = await categoriasService.Guardar(categoria);
         if (guardo)
         {
             Notificacion(ToastType.Warning, "Se Guardaron los datos correctamente.");
@@ -94,7 +85,7 @@
     }
     public Task Volver()
     {
-        navigation.NavigateTo("/usuarios/index/");
+        navigation.NavigateTo("/categorias/index/");
         return Task.CompletedTask;
     }
 }
