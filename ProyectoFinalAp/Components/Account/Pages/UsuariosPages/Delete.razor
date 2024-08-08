@@ -3,39 +3,44 @@
 @inject NavigationManager navigation
 @rendermode InteractiveServer
 
-<div class="container">
-    <div class="card-header bg-warning text-center">
-        <h1>Eliminar Usuario</h1>
-    </div>
-    <div class="card-body">
-        <h5 class="card-title">Detalles del Usuario</h5>
-
-        <dl class="row">
-            <div class="row">
-                <dt class="col-sm-3">UsuarioId:</dt>
-                <dd class="col-sm-9">@usuario.UsuarioId</dd>
-
-                <dt class="col-sm-3">UserId:</dt>
-                <dd class="col-sm-9">@usuario.UserId</dd>
+<div class="container mt-4">
+    <div class="card">
+        <div class="card-header bg-warning text-center">
+            <h1 class="text-white"><strong>Detalles del Usuario</strong></h1>
+        </div>
+        <div class="card-body">
+            <div class="row mb-3">
+                <div class="col-md-4">
+                    <div class="bg-success text-white p-2">UsuarioId:</div>
+                    <div class="p-2">@usuario.UsuarioId</div>
+                </div>
+                <div class="col-md-4">
+                    <div class="bg-success text-white p-2">UserId:</div>
+                    <div class="p-2">@usuario.UserId</div>
+                </div>
+                <div class="col-md-4">
+                    <div class="bg-success text-white p-2">RolId:</div>
+                    <div class="p-2">@usuario.RolId</div>
+                </div>
             </div>
-            <div class="row">
-                <dt class="col-sm-3">RolId:</dt>
-                <dd class="col-sm-9">@usuario.RolId</dd>
-
-                <dt class="col-sm-3">Nombre:</dt>
-                <dd class="col-sm-9">
-                    @usuario.Nombre
-                </dd>
-
-                <dt class="col-sm-3">Fecha de Registro:</dt>
-                <dd class="col-sm-9">
-                    @usuario.FechaRegistro.ToString("dd/MM/yyyy")
-                </dd>
+            <div class="row mb-3">
+                <div class="col-md-4">
+                    <div class="bg-success text-white p-2">Nombre:</div>
+                    <div class="p-2">@usuario.Nombre</div>
+                </div>
+                <div class="col-md-4">
+                    <div class="bg-success text-white p-2">Fecha de Registro:</div>
+                    <div class="p-2">@usuario.FechaRegistro.ToString("dd/MM/yyyy")</div>
+                </div>
             </div>
-        </dl>
-        <div class="card-footer text-center">
-            <button type="button" class="btn btn-danger" @onclick="Eliminar">Eliminar <i class="bi bi-trash3" /></button>
-            <button type="button" class="btn btn-outline-primary" @onclick="Volver">Volver <i class="bi bi-arrow-return-left" /></button>
+        </div>
+        <div class="card-footer bg-light text-end">
+            <button type="button" class="btn btn-danger" @onclick="Eliminar">
+                <i class="bi bi-trash3" /> Eliminar
+            </button>
+            <button type="button" class="btn btn-outline-primary" @onclick="Volver">
+                <i class="bi bi-arrow-return-left" /> Volver
+            </button>
         </div>
     </div>
 </div>
@@ -45,7 +50,9 @@
     public int UsuarioId { get; set; }
     public Usuarios usuario { get; set; } = new Usuarios();
     public List<ToastMessage> messages = new List<ToastMessage>();
+
     public void Notificacion(ToastType toastType, string message) => messages.Add(ShowToast(toastType, message));
+
     private ToastMessage ShowToast(ToastType toastType, string message)
     {
         var mensaje = new ToastMessage()
@@ -56,6 +63,7 @@
         toastService.Notify(mensaje);
         return mensaje;
     }
+
     protected override async Task OnInitializedAsync()
     {
         usuario = await usuarioService.Buscar(UsuarioId);
@@ -63,10 +71,17 @@
 
     public async Task Eliminar()
     {
-        await usuarioService.Eliminar(usuario);
-        Notificacion(ToastType.Warning, "Usuario eliminado");
-        await Task.Delay(2000);
-        await Volver();
+        try
+        {
+            await usuarioService.Eliminar(usuario);
+            Notificacion(ToastType.Success, "Usuario eliminado correctamente.");
+            await Task.Delay(1500);
+            await Volver();
+        }
+        catch (Exception ex)
+        {
+            Notificacion(ToastType.Warning, $"Error al eliminar el usuario: {ex.Message}");
+        }
     }
 
     public Task Volver()
