@@ -1,0 +1,112 @@
+﻿@page "/presupuestos/eliminar/{PresupuestoId:int}"
+@inject PresupuestosService presupuestoService
+@inject NavigationManager navigation
+@rendermode InteractiveServer
+
+<div class="container mt-4">
+    <div class="card">
+        <div class="card-header bg-warning text-center">
+            <h1 class="text-white"><strong>Detalles del Presupuesto</strong></h1>
+        </div>
+        <div class="card-body">
+            <div class="row mb-3">
+                <div class="col-md-4">
+                    <div class="bg-success text-white p-2">ID:</div>
+                    <div class="p-2">@presupuesto.PresupuestoId</div>
+                </div>
+                <div class="col-md-4">
+                    <div class="bg-success text-white p-2">Descripción:</div>
+                    <div class="p-2">@presupuesto.Descripcion</div>
+                </div>
+                <div class="col-md-4">
+                    <div class="bg-success text-white p-2">Monto Asignado:</div>
+                    <div class="p-2">@presupuesto.MontoAsignado</div>
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-4">
+                    <div class="bg-success text-white p-2">Fecha de Inicio:</div>
+                    <div class="p-2">@presupuesto.FechaInicio.ToString("dd/MM/yyyy")</div>
+                </div>
+                <div class="col-md-4">
+                    <div class="bg-success text-white p-2">Fecha de Fin:</div>
+                    <div class="p-2">@presupuesto.FechaFin.ToString("dd/MM/yyyy")</div>
+                </div>
+            </div>
+
+            <div class="card-header bg-warning text-center mt-4">
+                <h3 class="text-white"><strong>Detalles de los Gastos</strong></h3>
+            </div>
+
+            @if (presupuesto.DetallesGastosPresupuesto != null && presupuesto.DetallesGastosPresupuesto.Any())
+            {
+                <div class="table-responsive mt-3">
+                    <table class="table table-bordered table-striped">
+                        <thead class="bg-success text-white text-center">
+                            <tr>
+                                <th>Descripción</th>
+                                <th>Monto</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var detalle in presupuesto.DetallesGastosPresupuesto)
+                            {
+                                <tr>
+                                    <td>@detalle.Descripcion</td>
+                                    <td>@detalle.Monto</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        </div>
+        <div class="card-footer bg-light text-end">
+            <a type="button" @onclick="Eliminar" class="btn btn-danger">
+                <i class="bi bi-trash" /> Eliminar
+            </a>
+            <a type="button" href="/presupuestos/index" class="btn btn-outline-success">
+                <i class="bi bi-arrow-left" /> Volver
+            </a>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public int PresupuestoId { get; set; }
+    public Presupuestos presupuesto { get; set; } = new Presupuestos();
+    public List<Presupuestos> listpresupuetos { get; set; } = new List<Presupuestos>();
+    public DetalleGastoPresupuestos detalle { get; set; } = new DetalleGastoPresupuestos();
+    public bool hayPresupuesto = false;
+    public List<ToastMessage> messages = new List<ToastMessage>();
+    public void Notificacion(ToastType toastType, string message) => messages.Add(ShowToast(toastType, message));
+    private ToastMessage ShowToast(ToastType toastType, string message)
+    {
+        var mensaje = new ToastMessage()
+            {
+                Type = toastType,
+                Message = $"{message}. El {DateTime.Now.ToString("dd/MM/yyyy")} a las {DateTime.Now.ToString("hh:mm tt")}",
+            };
+        toastService.Notify(mensaje);
+        return mensaje;
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        presupuesto = await presupuestoService.Buscar(PresupuestoId);
+        listpresupuetos = await presupuestoService.Listar(p => p.PresupuestoId == PresupuestoId);
+    }
+    public async Task Eliminar()
+    {
+        await presupuestoService.Eliminar(PresupuestoId);
+        Notificacion(ToastType.Warning, "Se eliminaron los datos correctamente.");
+        await Task.Delay(1500);
+        await Volver();
+    }
+    public Task Volver()
+    {
+        navigation.NavigateTo("/presupuestos/index");
+        return Task.CompletedTask;
+    }
+}
