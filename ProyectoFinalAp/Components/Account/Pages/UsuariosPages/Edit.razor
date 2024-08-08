@@ -5,6 +5,8 @@
 
 <PageTitle>Edit Usuarios</PageTitle>
 
+@attribute [Authorize(Roles = "Admin")]
+
 <EditForm Model="usuario" OnValidSubmit="Modificar">
     <DataAnnotationsValidator />
     <div class="container text-center">
