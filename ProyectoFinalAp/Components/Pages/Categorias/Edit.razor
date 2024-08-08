@@ -6,6 +6,8 @@
 
 <PageTitle>Edit Categorias</PageTitle>
 
+@attribute [Authorize(Roles = "Admin")]
+
 <EditForm Model="categoria" OnValidSubmit="Modificar">
     <DataAnnotationsValidator />
     <div class="container">
