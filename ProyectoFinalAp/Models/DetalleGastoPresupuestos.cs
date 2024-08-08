@@ -7,6 +7,7 @@ public class DetalleGastoPresupuestos
 {
     [Key]
     public int DetalleGastoId { get; set; }
+    [ForeignKey("PresupuestoId")]
     public int PresupuestoId { get; set; }
     [Required(ErrorMessage = "Ingrese la Descripción.")]
     public string Descripcion { get; set; } = string.Empty;
@@ -14,6 +15,5 @@ public class DetalleGastoPresupuestos
     public float Monto { get; set; }
     [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
     public DateTime FechaAsignacion { get; set; } = DateTime.Now;
-    public float TotalGastos { get; set; }
     public virtual Presupuestos? Presupuesto { get; set; }
 }
