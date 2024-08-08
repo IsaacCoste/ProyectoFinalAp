@@ -1,0 +1,159 @@
+﻿@page "/presupuestos/index/"
+@inject PresupuestosService presupuestoService
+@inject NavigationManager NavigationManager
+@rendermode InteractiveServer
+
+<div class="container">
+    <div class="card-header bg-warning text-center">
+        <h1>Presupuestos</h1>
+    </div>
+    
+    <div class="row align-items-end justify-content-end mb-4">
+        <div class="col-md-3">
+            <label for="Filtro" class="form-label"><strong>Filtrar por:</strong></label>
+            <InputSelect id="filtro" class="form-select" @bind-Value="filtro">
+                <option value="" disabled>Seleccionar</option>
+                <option value="PresupuestoId">PresupuestoId</option>
+                <option value="Descripcion">Descripcion</option>
+                <option value="MontoAsignado">MontoAsignado</option>
+            </InputSelect>
+        </div>
+        <div class="col-md-6">
+            <label for="ValorFiltro" class="form-label"><strong>B&uacute;squeda:</strong></label>
+            <div class="input-group">
+                <input @bind="valorFiltro" class="form-control" placeholder="Buscar" />
+                <button @onclick="Buscar" class="btn btn-primary" type="button">
+                    <span class="bi bi-search"></span> Buscar
+                </button>
+            </div>
+        </div>
+        <div class="col">
+            <a href="/presupuestos/crear" class="btn btn-primary bi bi-plus">Crear</a>
+            <a href="#" class="btn btn-outline-success bi bi-arrow-left">Volver</a>
+        </div>
+    </div>
+
+    <div class="col-8">
+        <label class="fw-bold">Filtrar por Fecha:</label>
+
+        <div class="input-group">
+            <label class="input-group-text bg-primary text-white">Desde</label>
+            <input type="date" class="form-control" @bind="fechaDesde">
+            <span class="input-group-text bg-primary text-white">Hasta</span>
+            <input type="date" class="form-control" @bind="fechaHasta">
+            <button class="btn btn-outline-primary" @onclick="BuscarFecha"><i class="fas fa-search"></i> Buscar</button>
+        </div>
+    </div>
+    
+    <div class="card-body">
+        <table class="table table-bordered miTabla">
+            <thead>
+                <tr>
+                    <th>PresupuestoId</th>
+                    <th>Descripci&oacute;n</th>
+                    <th>Monto Asignado</th>
+                    <th>Fecha Inicio</th>
+                    <th>Fecha Fin</th>
+                    <th>Ver</th>
+                    <th>Editar</th>
+                    <th>Eliminar</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (listPresupuestos.Any())
+                {
+                    @foreach (var presupuesto in listPresupuestos)
+                    {
+                        <tr>
+                            <td>@presupuesto.PresupuestoId</td>
+                            <td>@presupuesto.Descripcion</td>
+                            <td>@presupuesto.MontoAsignado</td>
+                            <td>@presupuesto.FechaInicio.ToString("dd/MM/yyyy")</td>
+                            <td>@presupuesto.FechaFin.ToString("dd/MM/yyyy")</td>
+                            <td>
+                                <button type="button" class="btn btn-outline-info" @onclick="()=> Ver(presupuesto.PresupuestoId)" data-bs-toggle="tooltip" data-bs-placement="top" title="Ver detalles">
+                                    <i class="bi bi-eye"></i>
+                                </button>
+                            </td>
+                            <td>
+                                <button type="button" class="btn btn-outline-warning" @onclick="()=> Editar(presupuesto.PresupuestoId)" data-bs-toggle="tooltip" data-bs-placement="top" title="Editar">
+                                    <i class="bi bi-pencil"></i>
+                                </button>
+                            </td>
+                            <td>
+                                <button type="button" class="btn btn-outline-danger" @onclick="()=> Eliminar(presupuesto.PresupuestoId)" data-bs-toggle="tooltip" data-bs-placement="top" title="Eliminar">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="9" class="text-center">No hay registros</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <div class="card-footer">
+        <p><strong>Total de presupuestos:</strong> @listPresupuestos.Count</p>
+    </div>
+</div>
+
+@code {
+    public List<Presupuestos> listPresupuestos { get; set; } = new List<Presupuestos>();
+    private string filtro = "";
+    private string valorFiltro = "";
+    public DateTime fechaDesde = DateTime.Now;
+    public DateTime fechaHasta = DateTime.Now;
+    protected override async Task OnInitializedAsync()
+    {
+        listPresupuestos = await presupuestoService.Listar(p => true);
+    }
+    public async Task Buscar()
+    {
+        if (!string.IsNullOrWhiteSpace(valorFiltro))
+        {
+            if (filtro == "UsuarioId" && int.TryParse(valorFiltro, out int PresupuestoId))
+            {
+                listPresupuestos = await presupuestoService.Listar(p => p.PresupuestoId == PresupuestoId);
+            }
+            else if (filtro == "Descripcion")
+            {
+                listPresupuestos = await presupuestoService.Listar(p => p.Descripcion.ToLower().Contains(valorFiltro.ToLower()));
+            }
+            else if (filtro == "MontoAsignado" && float.TryParse(valorFiltro, out float Monto))
+            {
+                listPresupuestos = await presupuestoService.Listar(p => p.MontoAsignado == Monto);
+            }
+        }
+    }
+    public async Task BuscarFecha()
+    {
+        if (fechaDesde != null && fechaHasta != null && fechaDesde <= fechaHasta)
+        {
+            listPresupuestos = await presupuestoService.Listar(p => p.FechaInicio >= fechaDesde && p.FechaFin <= fechaHasta);
+        }
+        else
+        {
+            listPresupuestos = await presupuestoService.Listar(p => true);
+        }
+    }
+    public Task Ver(int id)
+    {
+        NavigationManager.NavigateTo($"/presupuestos/ver/{id}");
+        return Task.CompletedTask;
+    }
+    public Task Editar(int id)
+    {
+        NavigationManager.NavigateTo($"/presupuestos/editar/{id}");
+        return Task.CompletedTask;
+    }
+    public Task Eliminar(int id)
+    {
+        NavigationManager.NavigateTo($"/presupuestos/eliminar/{id}");
+        return Task.CompletedTask;
+    }
+}
