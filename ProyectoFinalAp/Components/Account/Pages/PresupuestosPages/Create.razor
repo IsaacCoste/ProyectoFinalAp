@@ -1,0 +1,146 @@
+﻿@page "/presupuestos/crear/"
+@inject PresupuestosService presupuestoService
+@inject NavigationManager navigation
+@rendermode InteractiveServer
+
+<EditForm Model="presupuesto" OnValidSubmit="Guardar">
+    <DataAnnotationsValidator />
+    <div class="container">
+        <div class="card-header bg-warning text-center">
+            <h1><strong>Editar Presupuesto</strong></h1>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <label>PresupuestoId</label>
+                    <InputNumber @bind-Value="presupuesto.PresupuestoId" class="form-control" disabled />
+                </div>
+                <div class="col-md-6">
+                    <label>Descripci&oacute;n</label>
+                    <InputText @bind-Value="presupuesto.Descripcion" class="form-control" placeholder="Descripci&oacute;n del presupuesto" />
+                    <ValidationMessage For="@(() => presupuesto.Descripcion)" />
+                </div>
+                <div class="col-md-6">
+                    <label>Monto Asignado</label>
+                    <InputNumber @bind-Value="presupuesto.MontoAsignado" class="form-control" placeholder="Monto Asignado para el presupuesto" />
+                    <ValidationMessage For="@(() => presupuesto.MontoAsignado)" />
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <label>Fecha de Inicio</label>
+                    <InputDate @bind-Value="presupuesto.FechaInicio" class="form-control" />
+                    <ValidationMessage For="@(() => presupuesto.FechaInicio)" />
+                </div>
+                <div class="col-md-6">
+                    <label>Fecha de Fin</label>
+                    <InputDate @bind-Value="presupuesto.FechaFin" class="form-control" />
+                    <ValidationMessage For="@(() => presupuesto.FechaFin)" />
+                </div>
+            </div>
+            <hr />
+            <div class="card-header text-center bg-warning">
+                <h2><strong>Detalle del Presupuesto</strong></h2>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <label>Descripci&oacute;n</label>
+                    <InputText @bind-Value="detalle.Descripcion" class="form-control" placeholder="Descripci&oacute;n del gasto" />
+                </div>
+                <div class="col-md-6">
+                    <label>Monto</label>
+                    <InputNumber @bind-Value="detalle.Monto" class="form-control" placeholder="Monto del gasto" />
+                </div>
+                <div class="text-end mb-2">
+                    <button type="button" class="btn btn-outline-success" @onclick="AgregarDetalle"><i class="bi bi-floppy-fill"></i> Agregar</button>
+                </div>
+            </div>
+            <div>
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Descripci&oacute;n</th>
+                            <th>Monto</th>
+                            <th>Eliminar</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in presupuesto.DetallesGastosPresupuesto)
+                        {
+                            <tr>
+                                <td>@item.Descripcion</td>
+                                <td>@item.Monto</td>
+                                <td>
+                                    <button type="button" class="btn btn-outline-danger" @onclick="() => EliminarDetalle(item)"><i class="bi bi-trash"></i> Eliminar</button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <p>Los Gastos Totales: @MontoTotalGastos</p>
+        </div>
+        <div class="card-footer text-center">
+            <div class="text-end">
+                <button @onclick="Guardar" class="btn btn-primary"><i class="bi bi-floppy-fill"></i> Guardar</button>
+                <button type="button" class="btn btn-danger" @onclick="Volver"><i class="bi bi-arrow-left"></i> Volver</button>
+            </div>
+
+        </div>
+    </div>
+</EditForm>
+
+@code {
+    public Presupuestos presupuesto { get; set; } = new Presupuestos();
+    public DetalleGastoPresupuestos detalle { get; set; } = new DetalleGastoPresupuestos();
+    public bool hayPresupuesto = false;
+    public float MontoTotalGastos => presupuesto.DetallesGastosPresupuesto.Sum(d => d.Monto);
+    public List<ToastMessage> messages = new List<ToastMessage>();
+    public void Notificacion(ToastType toastType, string message) => messages.Add(ShowToast(toastType, message));
+    private ToastMessage ShowToast(ToastType toastType, string message)
+    {
+        var mensaje = new ToastMessage()
+            {
+                Type = toastType,
+                Message = $"{message}. El {DateTime.Now.ToString("dd/MM/yyyy")} a las {DateTime.Now.ToString("hh:mm tt")}",
+            };
+        toastService.Notify(mensaje);
+        return mensaje;
+    }
+    public async Task<bool> Validar()
+    {
+        hayPresupuesto = await presupuestoService.Existe(presupuesto.PresupuestoId, presupuesto.Descripcion);
+        return !hayPresupuesto;
+    }
+    public async Task Guardar()
+    {
+        var guardo = await presupuestoService.Guardar(presupuesto);
+        if (guardo)
+        {
+            Notificacion(ToastType.Success, "El presupuesto se ha creado correctamente");
+            return;
+        }
+    }
+    public void AgregarDetalle()
+    {
+        var montoTotalDetalles = presupuesto.DetallesGastosPresupuesto.Sum(d => d.Monto);
+        if (montoTotalDetalles + detalle.Monto > presupuesto.MontoAsignado)
+        {
+            Notificacion(ToastType.Warning, "El monto total de los detalles supera el monto asignado del presupuesto.");
+            return;
+        }
+
+        presupuesto.DetallesGastosPresupuesto.Add(detalle);
+        detalle = new DetalleGastoPresupuestos();
+        Notificacion(ToastType.Success, "El detalle se agrego correctamente al presupuesto.");
+    }
+    public void EliminarDetalle(DetalleGastoPresupuestos item)
+    {
+        presupuesto.DetallesGastosPresupuesto.Remove(item);
+    }
+    public Task Volver()
+    {
+        navigation.NavigateTo("/presupuestos/index/");
+        return Task.CompletedTask;
+    }
+}
