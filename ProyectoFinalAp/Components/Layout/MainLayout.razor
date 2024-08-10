@@ -17,7 +17,7 @@
             <AuthorizeView>
                 @context.User.Identity?.Name
             </AuthorizeView>
-            <AuthorizeView Roles="Usuario">
+            <AuthorizeView Roles="Admin, Usuario">
                 <div class="top-row px-2">
                     <form action="Account/Logout" method="post">
                         <AntiforgeryToken />
