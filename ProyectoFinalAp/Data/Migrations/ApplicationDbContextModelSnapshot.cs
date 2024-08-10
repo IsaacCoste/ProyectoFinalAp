@@ -395,17 +395,6 @@ namespace ProyectoFinalAp.Migrations
 
             modelBuilder.Entity("ProyectoFinalAp.Models.Presupuestos", b =>
                 {
-                    b.HasOne("ProyectoFinalAp.Models.Usuarios", "Usuario")
-                        .WithMany("Presupuestos")
-                        .HasForeignKey("UsuarioId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Usuario");
-                });
-
-            modelBuilder.Entity("ProyectoFinalAp.Models.Presupuestos", b =>
-                {
                     b.Navigation("DetallesGastosPresupuesto");
                 });
 
