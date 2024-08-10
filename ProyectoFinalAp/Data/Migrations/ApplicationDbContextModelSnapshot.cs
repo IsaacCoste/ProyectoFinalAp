@@ -324,43 +324,6 @@ namespace ProyectoFinalAp.Migrations
                     b.ToTable("Presupuestos");
                 });
 
-            modelBuilder.Entity("ProyectoFinalAp.Models.Transacciones", b =>
-                {
-                    b.Property<int>("TransaccionId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TransaccionId"));
-
-                    b.Property<int>("CategoriaId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Descripción")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("Fecha")
-                        .HasColumnType("datetime2");
-
-                    b.Property<float>("Monto")
-                        .HasColumnType("real");
-
-                    b.Property<string>("Tipo")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("UsuarioId")
-                        .HasColumnType("int");
-
-                    b.HasKey("TransaccionId");
-
-                    b.HasIndex("CategoriaId");
-
-                    b.HasIndex("UsuarioId");
-
-                    b.ToTable("Transacciones");
-                });
-
             modelBuilder.Entity("ProyectoFinalAp.Models.Usuarios", b =>
                 {
                     b.Property<int>("UsuarioId")
