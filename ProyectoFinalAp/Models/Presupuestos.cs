@@ -17,6 +17,5 @@ public class Presupuestos
     [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
     [Required(ErrorMessage = "Ingrese la Fecha de Fin.")]
     public DateTime FechaFin { get; set; } = DateTime.Now;
-    public virtual Usuarios? Usuario { get; set; }
     public virtual ICollection<DetalleGastoPresupuestos> DetallesGastosPresupuesto { get; set; } = new List<DetalleGastoPresupuestos>();
 }
