@@ -2,12 +2,13 @@
 
 @inject CategoriasService categoriasService
 @inject NavigationManager navigation
+@rendermode InteractiveServer
 
 <PageTitle>Create Categoria</PageTitle>
 
 @* @attribute [Authorize(Roles = "Admin")] *@
 
-<EditForm Model="categoria" OnValidSubmit="Guardar" FormName="CategoriaForm">
+<EditForm Model="categoria" OnValidSubmit="Guardar">
     <DataAnnotationsValidator />
     <div class="container">
         <div class="card-header bg-warning text-center">
