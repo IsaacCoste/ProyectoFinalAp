@@ -7,7 +7,7 @@
     <div class="card-header bg-warning text-center">
         <h1>Presupuestos</h1>
     </div>
-    
+
     <div class="row align-items-end justify-content-end mb-4">
         <div class="col-md-3">
             <label for="Filtro" class="form-label"><strong>Filtrar por:</strong></label>
@@ -44,13 +44,14 @@
             <button class="btn btn-outline-primary" @onclick="BuscarFecha"><i class="fas fa-search"></i> Buscar</button>
         </div>
     </div>
-    
+
     <div class="card-body">
         <table class="table table-bordered miTabla">
             <thead>
                 <tr>
-                    <th>PresupuestoId</th>
+                    <th>Id</th>
                     <th>Descripci&oacute;n</th>
+                    <th>Tipo Presupuesto</th>
                     <th>Monto Asignado</th>
                     <th>Fecha Inicio</th>
                     <th>Fecha Fin</th>
@@ -60,10 +61,8 @@
                 </tr>
             </thead>
             <tbody>
-                @if (listPresupuestos.Any())
-                {
-                    @foreach (var presupuesto in listPresupuestos)
-                    {
+                @if (listPresupuestos.Any()) {
+                    @foreach (var presupuesto in listPresupuestos) {
                         <tr>
                             <td>@presupuesto.PresupuestoId</td>
                             <td>@presupuesto.Descripcion</td>
@@ -88,8 +87,7 @@
                         </tr>
                     }
                 }
-                else
-                {
+                else {
                     <tr>
                         <td colspan="9" class="text-center">No hay registros</td>
                     </tr>
@@ -108,51 +106,39 @@
     private string valorFiltro = "";
     public DateTime fechaDesde = DateTime.Now;
     public DateTime fechaHasta = DateTime.Now;
-    protected override async Task OnInitializedAsync()
-    {
+    protected override async Task OnInitializedAsync() {
         listPresupuestos = await presupuestoService.Listar(p => true);
     }
-    public async Task Buscar()
-    {
-        if (!string.IsNullOrWhiteSpace(valorFiltro))
-        {
-            if (filtro == "UsuarioId" && int.TryParse(valorFiltro, out int PresupuestoId))
-            {
+    public async Task Buscar() {
+        if (!string.IsNullOrWhiteSpace(valorFiltro)) {
+            if (filtro == "UsuarioId" && int.TryParse(valorFiltro, out int PresupuestoId)) {
                 listPresupuestos = await presupuestoService.Listar(p => p.PresupuestoId == PresupuestoId);
             }
-            else if (filtro == "Descripcion")
-            {
+            else if (filtro == "Descripcion") {
                 listPresupuestos = await presupuestoService.Listar(p => p.Descripcion.ToLower().Contains(valorFiltro.ToLower()));
             }
-            else if (filtro == "MontoAsignado" && float.TryParse(valorFiltro, out float Monto))
-            {
+            else if (filtro == "MontoAsignado" && float.TryParse(valorFiltro, out float Monto)) {
                 listPresupuestos = await presupuestoService.Listar(p => p.MontoAsignado == Monto);
             }
         }
     }
-    public async Task BuscarFecha()
-    {
-        if (fechaDesde != null && fechaHasta != null && fechaDesde <= fechaHasta)
-        {
+    public async Task BuscarFecha() {
+        if (fechaDesde != null && fechaHasta != null && fechaDesde <= fechaHasta) {
             listPresupuestos = await presupuestoService.Listar(p => p.FechaInicio >= fechaDesde && p.FechaFin <= fechaHasta);
         }
-        else
-        {
+        else {
             listPresupuestos = await presupuestoService.Listar(p => true);
         }
     }
-    public Task Ver(int id)
-    {
+    public Task Ver(int id) {
         NavigationManager.NavigateTo($"/presupuestos/ver/{id}");
         return Task.CompletedTask;
     }
-    public Task Editar(int id)
-    {
+    public Task Editar(int id) {
         NavigationManager.NavigateTo($"/presupuestos/editar/{id}");
         return Task.CompletedTask;
     }
-    public Task Eliminar(int id)
-    {
+    public Task Eliminar(int id) {
         NavigationManager.NavigateTo($"/presupuestos/eliminar/{id}");
         return Task.CompletedTask;
     }

@@ -5,50 +5,60 @@
 
 <EditForm Model="presupuesto" OnValidSubmit="Guardar">
     <DataAnnotationsValidator />
-    <div class="container">
-        <div class="card-header bg-warning text-center">
-            <h1><strong>Editar Presupuesto</strong></h1>
+    <div class="container borderRegistro">
+        <div class="card-header">
+            <div class="text-center bg-warning borderRegistro">
+                <h1><strong>Editar Presupuesto</strong></h1>
+            </div>
         </div>
         <div class="card-body">
             <div class="row">
-                <div class="col-md-6">
-                    <label>PresupuestoId</label>
-                    <InputNumber @bind-Value="presupuesto.PresupuestoId" class="form-control" disabled />
-                </div>
-                <div class="col-md-6">
-                    <label>Descripci&oacute;n</label>
+                <div class="col-4">
+                    <label class="form-label borderRegistro"><strong>Descripci&oacute;n</strong></label>
                     <InputText @bind-Value="presupuesto.Descripcion" class="form-control" placeholder="Descripci&oacute;n del presupuesto" />
                     <ValidationMessage For="@(() => presupuesto.Descripcion)" />
                 </div>
-                <div class="col-md-6">
-                    <label>Monto Asignado</label>
+                <div class="col-4">
+                    <label class="form-label borderRegistro" for="tipo"><strong>Tipo Presupuesto</strong></label>
+                    <select class="form-select">
+                        <option value="0" selected>Seleccione un Tipo</option>
+                        <option value="1">Gastos</option>
+                        <option value="2">Ingresos</option>
+                    </select>
+                </div>
+            </div>
+            <div class="mt-3 row">
+                <div class="col-3">
+                    <label class="form-label borderRegistro"><strong>Monto Asignado</strong></label>
                     <InputNumber @bind-Value="presupuesto.MontoAsignado" class="form-control" placeholder="Monto Asignado para el presupuesto" />
                     <ValidationMessage For="@(() => presupuesto.MontoAsignado)" />
                 </div>
-            </div>
-            <div class="row">
-                <div class="col-md-6">
-                    <label>Fecha de Inicio</label>
+                <div class="col-4">
+                    <label class="form-label borderRegistro"><strong>Fecha de Inicio</strong></label>
                     <InputDate @bind-Value="presupuesto.FechaInicio" class="form-control" />
                     <ValidationMessage For="@(() => presupuesto.FechaInicio)" />
                 </div>
-                <div class="col-md-6">
-                    <label>Fecha de Fin</label>
+                <div class="col-4">
+                    <label class="form-label borderRegistro"><strong>Fecha de Fin</strong></label>
                     <InputDate @bind-Value="presupuesto.FechaFin" class="form-control" />
                     <ValidationMessage For="@(() => presupuesto.FechaFin)" />
                 </div>
             </div>
-            <hr />
-            <div class="card-header text-center bg-warning">
-                <h2><strong>Detalle del Presupuesto</strong></h2>
+
+
+            @*Detalle*@
+            <div class="card-header mt-5">
+                <div class="text-center bg-warning borderRegistro">
+                    <h1><strong>Presuspuesto</strong></h1>
+                </div>
             </div>
-            <div class="row">
-                <div class="col-md-6">
-                    <label>Descripci&oacute;n</label>
+            <div class="row mt-5">
+                <div class="col-4">
+                    <label class="form-label"><strong>Descripci&oacute;n</strong></label>
                     <InputText @bind-Value="detalle.Descripcion" class="form-control" placeholder="Descripci&oacute;n del gasto" />
                 </div>
-                <div class="col-md-6">
-                    <label>Monto</label>
+                <div class="col-4">
+                    <label class="form-label"><strong>Monto</strong></label>
                     <InputNumber @bind-Value="detalle.Monto" class="form-control" placeholder="Monto del gasto" />
                 </div>
                 <div class="text-end mb-2">
@@ -56,8 +66,8 @@
                 </div>
             </div>
             <div>
-                <table class="table table-bordered">
-                    <thead>
+                <table class="table table-bordered ">
+                    <thead class="text-center">
                         <tr>
                             <th>Descripci&oacute;n</th>
                             <th>Monto</th>
@@ -65,8 +75,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach (var item in presupuesto.DetallesGastosPresupuesto)
-                        {
+                        @foreach (var item in presupuesto.DetallesGastosPresupuesto) {
                             <tr>
                                 <td>@item.Descripcion</td>
                                 <td>@item.Monto</td>
@@ -81,11 +90,8 @@
             <p>Los Gastos Totales: @MontoTotalGastos</p>
         </div>
         <div class="card-footer text-center">
-            <div class="text-end">
-                <button @onclick="Guardar" class="btn btn-primary"><i class="bi bi-floppy-fill"></i> Guardar</button>
-                <button type="button" class="btn btn-danger" @onclick="Volver"><i class="bi bi-arrow-left"></i> Volver</button>
-            </div>
-
+            <button type="button" class="btn btn-danger" @onclick="Volver"><i class="bi bi-arrow-left"></i> Volver</button>
+            <button @onclick="Guardar" class="btn btn-primary"><i class="bi bi-floppy-fill"></i> Guardar</button>
         </div>
     </div>
 </EditForm>
@@ -97,35 +103,28 @@
     public float MontoTotalGastos => presupuesto.DetallesGastosPresupuesto.Sum(d => d.Monto);
     public List<ToastMessage> messages = new List<ToastMessage>();
     public void Notificacion(ToastType toastType, string message) => messages.Add(ShowToast(toastType, message));
-    private ToastMessage ShowToast(ToastType toastType, string message)
-    {
-        var mensaje = new ToastMessage()
-            {
+    private ToastMessage ShowToast(ToastType toastType, string message) {
+        var mensaje = new ToastMessage() {
                 Type = toastType,
                 Message = $"{message}. El {DateTime.Now.ToString("dd/MM/yyyy")} a las {DateTime.Now.ToString("hh:mm tt")}",
             };
         toastService.Notify(mensaje);
         return mensaje;
     }
-    public async Task<bool> Validar()
-    {
+    public async Task<bool> Validar() {
         hayPresupuesto = await presupuestoService.Existe(presupuesto.PresupuestoId, presupuesto.Descripcion);
         return !hayPresupuesto;
     }
-    public async Task Guardar()
-    {
+    public async Task Guardar() {
         var guardo = await presupuestoService.Guardar(presupuesto);
-        if (guardo)
-        {
+        if (guardo) {
             Notificacion(ToastType.Success, "El presupuesto se ha creado correctamente");
             return;
         }
     }
-    public void AgregarDetalle()
-    {
+    public void AgregarDetalle() {
         var montoTotalDetalles = presupuesto.DetallesGastosPresupuesto.Sum(d => d.Monto);
-        if (montoTotalDetalles + detalle.Monto > presupuesto.MontoAsignado)
-        {
+        if (montoTotalDetalles + detalle.Monto > presupuesto.MontoAsignado) {
             Notificacion(ToastType.Warning, "El monto total de los detalles supera el monto asignado del presupuesto.");
             return;
         }
@@ -134,12 +133,10 @@
         detalle = new DetalleGastoPresupuestos();
         Notificacion(ToastType.Success, "El detalle se agrego correctamente al presupuesto.");
     }
-    public void EliminarDetalle(DetalleGastoPresupuestos item)
-    {
+    public void EliminarDetalle(DetalleGastoPresupuestos item) {
         presupuesto.DetallesGastosPresupuesto.Remove(item);
     }
-    public Task Volver()
-    {
+    public Task Volver() {
         navigation.NavigateTo("/presupuestos/index/");
         return Task.CompletedTask;
     }
