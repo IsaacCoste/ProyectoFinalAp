@@ -16,6 +16,7 @@ public partial class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<Ingresos> Ingresos { get; set; }
     public DbSet<DetalleGastoPresupuestos> DetalleGastoPresupuestos { get; set; }
     public DbSet<Usuarios> Usuarios { get; set; }
+    public DbSet<Gastos> Gastos { get; set; }
 
 //    public virtual DbSet<AspNetRole> AspNetRoles { get; set; }
 

@@ -20,6 +20,7 @@ builder.Services.AddScoped<AuthenticationStateProvider, IdentityRevalidatingAuth
 builder.Services.AddScoped<UsuariosService>();
 builder.Services.AddScoped<PresupuestosService>();
 builder.Services.AddScoped<CategoriasService>();
+builder.Services.AddScoped<GastosService>();
 builder.Services.AddBlazorBootstrap();
 
 builder.Services.AddAuthentication(options =>
