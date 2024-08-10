@@ -409,10 +409,6 @@ namespace ProyectoFinalAp.Migrations
                     b.Navigation("DetallesGastosPresupuesto");
                 });
 
-            modelBuilder.Entity("ProyectoFinalAp.Models.Usuarios", b =>
-                {
-                    b.Navigation("Presupuestos");
-                });
 #pragma warning restore 612, 618
         }
     }
