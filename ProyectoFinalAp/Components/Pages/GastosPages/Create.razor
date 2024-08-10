@@ -1,0 +1,87 @@
+﻿@page "/gastos/create"
+
+@inject GastosService gastosService
+@inject NavigationManager navigation
+@rendermode InteractiveServer
+
+<PageTitle>Create Gastos</PageTitle>
+
+<EditForm Model="gasto" OnValidSubmit="Guardar">
+    <DataAnnotationsValidator />
+    <div class="container">
+        <div class="card-header bg-warning text-center">
+            <h1>Crear Gastos</h1>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <label>ID</label>
+                <InputNumber @bind-Value="gasto.GastoId" class="form-control" disabled />
+            </div>
+            <div class="col-md-4">
+                <label>Fecha</label>
+                <InputDate @bind-Value="gasto.Fecha" class="form-control" />
+                <ValidationMessage For="@(() => gasto.Fecha)" />
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <label>Concepto</label>
+                <InputText @bind-Value="gasto.Concepto" class="form-control" />
+                <ValidationMessage For="@(() => gasto.Concepto)" />
+            </div>
+            <div class="col-md-4">
+                <label>Monto</label>
+                <InputNumber @bind-Value="gasto.Monto" class="form-control" />
+                <ValidationMessage For="@(() => gasto.Monto)" />
+            </div>
+        </div>
+        <div class="card-footer text-center">
+            <button class="btn btn-success">Crear <i class="bi bi-floppy-fill" /></button>
+            <button type="button" class="btn btn-outline-primary" @onclick="Volver">Volver <i class="bi bi-arrow-return-left" /></button>
+        </div>
+    </div>
+</EditForm>
+
+@code {
+    public Gastos gasto { get; set; } = new Gastos();
+    public bool hayGasto = false;
+    public List<ToastMessage> messages = new List<ToastMessage>();
+    public void Notificacion(ToastType toastType, string message) => messages.Add(ShowToast(toastType, message));
+    private ToastMessage ShowToast(ToastType toastType, string message)
+    {
+        var mensaje = new ToastMessage()
+            {
+                Type = toastType,
+                Message = $"{message}. El {DateTime.Now.ToString("dd/MM/yyyy")} a las {DateTime.Now.ToString("hh:mm tt")}",
+            };
+        toastService.Notify(mensaje);
+        return mensaje;
+    }
+
+    private async Task<bool> Validar()
+    {
+        hayGasto = await gastosService.Existe(gasto.GastoId);
+        return !hayGasto;
+    }
+    public async Task Guardar()
+    {
+        if (!await Validar())
+        {
+            Notificacion(ToastType.Warning, "Intente con otro nombre.");
+            return;
+        }
+        var guardo = await gastosService.Guardar(gasto);
+        if (guardo)
+        {
+            Notificacion(ToastType.Warning, "Se Guardaron los datos correctamente.");
+            await Volver();
+        }
+        else
+            Notificacion(ToastType.Warning, "Ha ocurrido un error.");
+    }
+    public async Task Volver()
+    {
+        navigation.NavigateTo("/gastos/index");
+        await Task.CompletedTask;
+    }
+}
