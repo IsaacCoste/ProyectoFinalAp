@@ -24,11 +24,11 @@ public class GastosService(ApplicationDbContext contexto)
         return await _contexto.Gastos
             .AnyAsync(g => g.GastoId == gastoId);
     }
-    public async Task<bool> Existe(int gastoId, string? concepto)
+    public async Task<bool> Existe(int gastoId, DateTime? fecha)
     {
         return await _contexto.Gastos
             .AnyAsync(g => g.GastoId != gastoId
-            && g.Concepto.Equals(concepto));
+            && g.Fecha.Equals(fecha));
     }
     public async Task<bool> Guardar(Gastos gasto)
     {
