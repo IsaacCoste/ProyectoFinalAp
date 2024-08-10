@@ -13,6 +13,7 @@ public partial class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<Categorias> Categorias { get; set; }
     public DbSet<Transacciones> Transacciones { get; set; }
     public DbSet<Presupuestos> Presupuestos { get; set; }
+    public DbSet<Ingresos> Ingresos { get; set; }
     public DbSet<DetalleGastoPresupuestos> DetalleGastoPresupuestos { get; set; }
     public DbSet<Usuarios> Usuarios { get; set; }
 
