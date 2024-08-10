@@ -18,6 +18,10 @@
                 <InputNumber @bind-Value="gasto.GastoId" class="form-control" disabled />
             </div>
             <div class="col-md-4">
+                <label>CategoriaId</label>
+                <InputNumber @bind-Value="gasto.CategoriaId" class="form-control" />
+            </div>
+            <div class="col-md-4">
                 <label>Fecha</label>
                 <InputDate @bind-Value="gasto.Fecha" class="form-control" />
                 <ValidationMessage For="@(() => gasto.Fecha)" />
