@@ -14,6 +14,4 @@ public class Usuarios
     public string RolId { get; set; } = string.Empty;
     public string Nombre { get; set; } = string.Empty;
     public DateTime FechaRegistro { get; set; } = DateTime.Now;
-    [ForeignKey("UsuarioId")]
-    public virtual ICollection<Transacciones> Transacciones { get; set; } = new List<Transacciones>();
 }
