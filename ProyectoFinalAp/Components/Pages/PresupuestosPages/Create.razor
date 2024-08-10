@@ -1,4 +1,4 @@
-﻿@page "/presupuestos/editar/{PresupuestoId:int}"
+﻿@page "/presupuestos/crear/"
 @inject PresupuestosService presupuestoService
 @inject NavigationManager navigation
 @rendermode InteractiveServer
@@ -20,13 +20,13 @@
                     <InputText @bind-Value="presupuesto.Descripcion" class="form-control" placeholder="Descripci&oacute;n del presupuesto" />
                     <ValidationMessage For="@(() => presupuesto.Descripcion)" />
                 </div>
-            </div>
-            <div class="row">
                 <div class="col-md-6">
                     <label>Monto Asignado</label>
                     <InputNumber @bind-Value="presupuesto.MontoAsignado" class="form-control" placeholder="Monto Asignado para el presupuesto" />
                     <ValidationMessage For="@(() => presupuesto.MontoAsignado)" />
                 </div>
+            </div>
+            <div class="row">
                 <div class="col-md-6">
                     <label>Fecha de Inicio</label>
                     <InputDate @bind-Value="presupuesto.FechaInicio" class="form-control" />
@@ -91,10 +91,7 @@
 </EditForm>
 
 @code {
-    [Parameter]
-    public int PresupuestoId { get; set; }
     public Presupuestos presupuesto { get; set; } = new Presupuestos();
-    public List<Presupuestos> listpresupuetos { get; set; } = new List<Presupuestos>();
     public DetalleGastoPresupuestos detalle { get; set; } = new DetalleGastoPresupuestos();
     public bool hayPresupuesto = false;
     public float MontoTotalGastos => presupuesto.DetallesGastosPresupuesto.Sum(d => d.Monto);
@@ -110,11 +107,6 @@
         toastService.Notify(mensaje);
         return mensaje;
     }
-    protected override async Task OnInitializedAsync()
-    {
-        presupuesto = await presupuestoService.Buscar(PresupuestoId);
-        listpresupuetos = await presupuestoService.Listar(p => p.PresupuestoId == PresupuestoId);
-    }
     public async Task<bool> Validar()
     {
         hayPresupuesto = await presupuestoService.Existe(presupuesto.PresupuestoId, presupuesto.Descripcion);
@@ -124,15 +116,14 @@
     {
         if (!await Validar())
         {
-            Notificacion(ToastType.Warning, "Intente con otro nombre.");
+            Notificacion(ToastType.Warning, "El presupuesto con esta Descripción ya existe.");
             return;
         }
         var guardo = await presupuestoService.Guardar(presupuesto);
         if (guardo)
         {
             Notificacion(ToastType.Success, "El presupuesto se ha creado correctamente");
-            await Task.Delay(2000);
-            await Volver();
+            return;
         }
     }
     public void AgregarDetalle()
@@ -140,7 +131,7 @@
         var montoTotalDetalles = presupuesto.DetallesGastosPresupuesto.Sum(d => d.Monto);
         if (montoTotalDetalles + detalle.Monto > presupuesto.MontoAsignado)
         {
-            Notificacion(ToastType.Warning, "El monto que quiere agregar al detalles hace que se supera el monto asignado del presupuesto.");
+            Notificacion(ToastType.Warning, "El monto total de los detalles supera el monto asignado del presupuesto.");
             return;
         }
 
