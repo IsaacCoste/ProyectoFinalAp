@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ProyectoFinalAp.Data;
 
@@ -11,9 +12,11 @@ using ProyectoFinalAp.Data;
 namespace ProyectoFinalAp.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240810164859_Ingresos1")]
+    partial class Ingresos1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -280,6 +283,9 @@ namespace ProyectoFinalAp.Migrations
                     b.Property<int>("CategoriaId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("CategoriasCategoriaId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Concepto")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -291,6 +297,8 @@ namespace ProyectoFinalAp.Migrations
                         .HasColumnType("real");
 
                     b.HasKey("IngresoId");
+
+                    b.HasIndex("CategoriasCategoriaId");
 
                     b.ToTable("Ingresos");
                 });
@@ -451,6 +459,13 @@ namespace ProyectoFinalAp.Migrations
                     b.Navigation("Presupuesto");
                 });
 
+            modelBuilder.Entity("ProyectoFinalAp.Models.Ingresos", b =>
+                {
+                    b.HasOne("ProyectoFinalAp.Models.Categorias", null)
+                        .WithMany("Ingresos")
+                        .HasForeignKey("CategoriasCategoriaId");
+                });
+
             modelBuilder.Entity("ProyectoFinalAp.Models.Transacciones", b =>
                 {
                     b.HasOne("ProyectoFinalAp.Models.Categorias", "Categoria")
@@ -468,6 +483,11 @@ namespace ProyectoFinalAp.Migrations
                     b.Navigation("Categoria");
 
                     b.Navigation("Usuario");
+                });
+
+            modelBuilder.Entity("ProyectoFinalAp.Models.Categorias", b =>
+                {
+                    b.Navigation("Ingresos");
                 });
 
             modelBuilder.Entity("ProyectoFinalAp.Models.Presupuestos", b =>
