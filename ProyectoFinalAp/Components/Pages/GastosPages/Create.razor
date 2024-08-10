@@ -67,7 +67,7 @@
     {
         if (!await Validar())
         {
-            Notificacion(ToastType.Warning, "Intente con otro nombre.");
+            Notificacion(ToastType.Warning, "Intente nuevamente.");
             return;
         }
         var guardo = await gastosService.Guardar(gasto);
