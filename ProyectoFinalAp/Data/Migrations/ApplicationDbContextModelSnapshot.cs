@@ -451,34 +451,11 @@ namespace ProyectoFinalAp.Migrations
                     b.Navigation("Presupuesto");
                 });
 
-            modelBuilder.Entity("ProyectoFinalAp.Models.Transacciones", b =>
-                {
-                    b.HasOne("ProyectoFinalAp.Models.Categorias", "Categoria")
-                        .WithMany()
-                        .HasForeignKey("CategoriaId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ProyectoFinalAp.Models.Usuarios", "Usuario")
-                        .WithMany("Transacciones")
-                        .HasForeignKey("UsuarioId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Categoria");
-
-                    b.Navigation("Usuario");
-                });
-
             modelBuilder.Entity("ProyectoFinalAp.Models.Presupuestos", b =>
                 {
                     b.Navigation("DetallesGastosPresupuesto");
                 });
 
-            modelBuilder.Entity("ProyectoFinalAp.Models.Usuarios", b =>
-                {
-                    b.Navigation("Transacciones");
-                });
 #pragma warning restore 612, 618
         }
     }
