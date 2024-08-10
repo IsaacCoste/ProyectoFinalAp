@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ProyectoFinalAp.Data;
 
@@ -11,9 +12,11 @@ using ProyectoFinalAp.Data;
 namespace ProyectoFinalAp.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240810002458_Usuario2")]
+    partial class Usuario2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -290,7 +293,12 @@ namespace ProyectoFinalAp.Migrations
                     b.Property<float>("MontoAsignado")
                         .HasColumnType("real");
 
+                    b.Property<int?>("UsuarioId")
+                        .HasColumnType("int");
+
                     b.HasKey("PresupuestoId");
+
+                    b.HasIndex("UsuarioId");
 
                     b.ToTable("Presupuestos");
                 });
@@ -420,6 +428,15 @@ namespace ProyectoFinalAp.Migrations
                         .IsRequired();
 
                     b.Navigation("Presupuesto");
+                });
+
+            modelBuilder.Entity("ProyectoFinalAp.Models.Presupuestos", b =>
+                {
+                    b.HasOne("ProyectoFinalAp.Models.Usuarios", "Usuario")
+                        .WithMany()
+                        .HasForeignKey("UsuarioId");
+
+                    b.Navigation("Usuario");
                 });
 
             modelBuilder.Entity("ProyectoFinalAp.Models.Transacciones", b =>
