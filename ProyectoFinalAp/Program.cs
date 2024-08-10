@@ -21,6 +21,7 @@ builder.Services.AddScoped<UsuariosService>();
 builder.Services.AddScoped<PresupuestosService>();
 builder.Services.AddScoped<CategoriasService>();
 builder.Services.AddScoped<GastosService>();
+builder.Services.AddScoped<IngresosService>();
 builder.Services.AddBlazorBootstrap();
 
 builder.Services.AddAuthentication(options =>
