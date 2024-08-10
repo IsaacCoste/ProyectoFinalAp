@@ -272,32 +272,6 @@ namespace ProyectoFinalAp.Migrations
                     b.ToTable("DetalleGastoPresupuestos");
                 });
 
-            modelBuilder.Entity("ProyectoFinalAp.Models.Gastos", b =>
-                {
-                    b.Property<int>("GastoId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("GastoId"));
-
-                    b.Property<int>("CategoriaId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Concepto")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("Fecha")
-                        .HasColumnType("datetime2");
-
-                    b.Property<float>("Monto")
-                        .HasColumnType("real");
-
-                    b.HasKey("GastoId");
-
-                    b.ToTable("Gastos");
-                });
-
             modelBuilder.Entity("ProyectoFinalAp.Models.Presupuestos", b =>
                 {
                     b.Property<int>("PresupuestoId")
