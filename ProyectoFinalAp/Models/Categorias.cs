@@ -12,5 +12,4 @@ public class Categorias
     [Required(ErrorMessage = "Ingrese el Tipo de categoria")]
     [RegularExpression(@"^[a-zA-ZáéíóúÁÉÍÓÚ\s]+$", ErrorMessage = "Solo se permiten letras.")]
     public string Tipo { get; set; } = string.Empty;
-    public virtual ICollection<Gastos> Gastos { get; set; } = new List<Gastos>();
 }
