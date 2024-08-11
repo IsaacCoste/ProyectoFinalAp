@@ -75,7 +75,7 @@
     protected override async Task OnInitializedAsync()
     {
         categorias = await gastosService.GetCategorias();
-        categorias = await categoriaService.Listar(c => c.Nombre == "Gasto");
+        categorias = await gastosService.GetCategorias();
     }
 
     private async Task<bool> Validar()
