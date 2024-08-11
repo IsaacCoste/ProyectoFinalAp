@@ -1,31 +1,37 @@
-﻿@page "/categorias/delete/{CategoriaId:int}"
+﻿@page "/gastos/delete/{GastoId:int}"
 
-@inject CategoriasService categoriasService
+@inject GastosService gastosService
 @inject NavigationManager navigation
 @rendermode InteractiveServer
 
-<PageTitle>Delete Categorias</PageTitle>
-
-@* @attribute [Authorize(Roles = "Admin")] *@
+<PageTitle>Delete Gastos</PageTitle>
 
 <div class="card">
     <div class="card-header bg-warning text-center">
-        <h1>Eliminar Categoria</h1>
+        <h1>Eliminar Gastos</h1>
     </div>
     <div class="card-body">
-        <h5 class="card-title">Detalles de la Categoria</h5>
+        <h5 class="card-title">Detalles del Gasto</h5>
         <dl class="row">
             <div class="row">
+                <dt class="col-sm-3">GastoId:</dt>
+                <dd class="col-sm-9">@gasto.GastoId</dd>
+            </div>
+            <div class="row">
                 <dt class="col-sm-3">CategoriaId:</dt>
-                <dd class="col-sm-9">@categoria.CategoriaId</dd>
+                <dd class="col-sm-9">@gasto.Categoria?.Nombre</dd>
             </div>
             <div class="row">
-                <dt class="col-sm-3">Nombre:</dt>
-                <dd class="col-sm-9">@categoria.Nombre</dd>
+                <dt class="col-sm-3">Fecha:</dt>
+                <dd class="col-sm-9">@gasto.Fecha</dd>
             </div>
             <div class="row">
-                <dt class="col-sm-3">Tipo:</dt>
-                <dd class="col-sm-9">@categoria.Tipo</dd>
+                <dt class="col-sm-3">Concepto:</dt>
+                <dd class="col-sm-9">@gasto.Concepto</dd>
+            </div>
+            <div class="row">
+                <dt class="col-sm-3">Monto:</dt>
+                <dd class="col-sm-9">@gasto.Monto</dd>
             </div>
         </dl>
     </div>
@@ -37,8 +43,9 @@
 
 @code {
     [Parameter]
-    public int CategoriaId { get; set; }
-    public Categorias categoria { get; set; } = new Categorias();
+    public int GastoId { get; set; }
+    public Gastos gasto { get; set; } = new Gastos();
+    public List<Categorias> categorias { get; set; } = new List<Categorias>();
     public List<ToastMessage> messages = new List<ToastMessage>();
     public void Notificacion(ToastType toastType, string message) => messages.Add(ShowToast(toastType, message));
     private ToastMessage ShowToast(ToastType toastType, string message)
@@ -53,19 +60,20 @@
     }
     protected override async Task OnInitializedAsync()
     {
-        categoria = await categoriasService.Buscar(CategoriaId);
+        gasto = await gastosService.Buscar(GastoId);
+        categorias = await gastosService.GetCategorias();
     }
     public async Task Eliminar()
     {
-        await categoriasService.Eliminar(categoria);
-        Notificacion(ToastType.Warning, "Categoria eliminada");
+        await gastosService.Eliminar(gasto);
+        Notificacion(ToastType.Warning, "Gasto eliminado");
         await Task.Delay(2000);
         await Volver();
     }
 
     public Task Volver()
     {
-        navigation.NavigateTo("/categorias/index");
+        navigation.NavigateTo("/gastos/index");
         return Task.CompletedTask;
     }
 }

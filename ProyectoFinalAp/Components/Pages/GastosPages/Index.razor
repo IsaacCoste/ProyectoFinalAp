@@ -1,16 +1,14 @@
-﻿@page "/categorias/index"
+﻿@page "/gastos/index"
 
-@inject CategoriasService categoriasService
+@inject GastosService gastosService
 @inject NavigationManager navigation
 @rendermode InteractiveServer
 
-<PageTitle>Index Categorias</PageTitle>
-
-@* @attribute [Authorize(Roles = "Admin")] *@
+<PageTitle>Index Gastos</PageTitle>
 
 <div class="card">
     <div class="card-header bg-warning text-center">
-        <h1>Lista de Categorias</h1>
+        <h1>Lista de Gastos</h1>
     </div>
     <div class="card-body">
         <div class="row mb-3">
@@ -18,9 +16,8 @@
                 <label for="Filtro" class="form-label"><strong>Filtrar por:</strong></label>
                 <InputSelect id="filtro" class="form-select" @bind-Value="filtro">
                     <option value="" disabled>Seleccionar</option>
-                    <option value="Id">CategoriaId</option>
-                    <option value="Nombre">Nombre</option>
-                    <option value="Tipo">Tipo</option>
+                    <option value="Id">GastoId</option>
+                    <option value="Concepto">Concepto</option>
                 </InputSelect>
             </div>
             <div class="col-md-6">
@@ -40,29 +37,33 @@
             <table class="table table-bordered miTabla">
                 <thead>
                     <tr>
-                        <th>CategoriaId</th>
-                        <th>Nombre</th>
-                        <th>Tipo</th>
+                        <th>GastoId</th>
+                        <th>Categoria</th>
+                        <th>Fecha</th>
+                        <th>Concepto</th>
+                        <th>Monto</th>
                         <th>Editar</th>
                         <th>Eliminar</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @if (ListCategorias.Any())
+                    @if (ListGastos.Any())
                     {
-                        @foreach (var categoria in ListCategorias)
+                        @foreach (var gasto in ListGastos)
                         {
                             <tr>
-                                <td>@categoria.CategoriaId</td>
-                                <td>@categoria.Nombre</td>
-                                <td>@categoria.Tipo</td>
+                                <td>@gasto.GastoId</td>
+                                <td>@gasto.Categoria.Nombre</td>
+                                <td>@gasto.Fecha</td>
+                                <td>@gasto.Concepto</td>
+                                <td>@gasto.Monto</td>
                                 <td>
-                                    <button type="button" class="btn btn-outline-warning" @onclick="()=> Editar(categoria.CategoriaId)" data-bs-toggle="tooltip" data-bs-placement="top" title="Editar">
+                                    <button type="button" class="btn btn-outline-warning" @onclick="()=> Editar(gasto.GastoId)" data-bs-toggle="tooltip" data-bs-placement="top" title="Editar">
                                         <i class="bi bi-pencil-square"></i>
                                     </button>
                                 </td>
                                 <td>
-                                    <button type="button" class="btn btn-outline-danger" @onclick="()=> Eliminar(categoria.CategoriaId)" data-bs-toggle="tooltip" data-bs-placement="top" title="Eliminar">
+                                    <button type="button" class="btn btn-outline-danger" @onclick="()=> Eliminar(gasto.GastoId)" data-bs-toggle="tooltip" data-bs-placement="top" title="Eliminar">
                                         <i class="bi bi-trash3-fill"></i>
                                     </button>
                                 </td>
@@ -80,54 +81,50 @@
         </div>
     </div>
     <div class="card-footer">
-        <p><strong>Total de Categorias:</strong> @ListCategorias.Count</p>
+        <p><strong>Total de Gastos:</strong> @ListGastos.Count</p>
     </div>
 </div>
 
 
 @code {
-    public Categorias categoria { get; set; } = new Categorias();
-    public List<Categorias> ListCategorias { get; set; } = new List<Categorias>();
+    public Gastos gastos { get; set; } = new Gastos();
+    public List<Gastos> ListGastos { get; set; } = new List<Gastos>();
     private string filtro = "";
     private string valorFiltro = "";
     protected override async Task OnInitializedAsync()
     {
-        ListCategorias = await categoriasService.Listar(c => true);
+        ListGastos = await gastosService.Listar(c => true);
     }
     private async Task Buscar()
     {
         if (!string.IsNullOrWhiteSpace(valorFiltro))
         {
-            if (filtro == "Id" && int.TryParse(valorFiltro, out int CategoriaId))
+            if (filtro == "Id" && int.TryParse(valorFiltro, out int GastoId))
             {
-                ListCategorias = await categoriasService.Listar(t => t.CategoriaId == CategoriaId);
+                ListGastos = await gastosService.Listar(g => g.GastoId == GastoId);
             }
-            else if (filtro == "Nombre")
+            else if (filtro == "Concepto")
             {
-                ListCategorias = await categoriasService.Listar(t => t.Nombre.ToLower().Contains(valorFiltro.ToLower()));
-            }
-            else if (filtro == "Tipo")
-            {
-                ListCategorias = await categoriasService.Listar(t => t.Tipo.ToLower().Contains(valorFiltro.ToLower()));
+                ListGastos = await gastosService.Listar(g => g.Concepto.ToLower().Contains(valorFiltro.ToLower()));
             }
         }
         else
         {
-            ListCategorias = await categoriasService.Listar(u => true);
+            ListGastos = await gastosService.Listar(u => true);
         }
     }
     public void Crear()
     {
-        navigation.NavigateTo("/categorias/create");
+        navigation.NavigateTo("/gastos/create");
     }
     public Task Editar(int id)
     {
-        navigation.NavigateTo($"/categorias/edit/{id}");
+        navigation.NavigateTo($"/gastos/edit/{id}");
         return Task.CompletedTask;
     }
     public Task Eliminar(int id)
     {
-        navigation.NavigateTo($"/categorias/delete/{id}");
+        navigation.NavigateTo($"/gastos/delete/{id}");
         return Task.CompletedTask;
     }
 }

@@ -47,14 +47,22 @@ public class GastosService(ApplicationDbContext contexto)
     public async Task<Gastos?> Buscar(int gastoId)
     {
         return await _contexto.Gastos
+            .Include(g => g.Categoria)
             .AsNoTracking()
             .FirstOrDefaultAsync(g => g.GastoId == gastoId);
     }
     public async Task<List<Gastos>> Listar(Expression<Func<Gastos, bool>> criterio)
     {
         return await _contexto.Gastos
+            .Include(g => g.Categoria)
             .AsNoTracking()
             .Where(criterio)
+            .ToListAsync();
+    }
+    public async Task<List<Categorias>> GetCategorias()
+    {
+        return await _contexto.Categorias
+            .AsNoTracking()
             .ToListAsync();
     }
 }
