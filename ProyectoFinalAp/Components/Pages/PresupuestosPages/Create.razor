@@ -5,7 +5,7 @@
 
 <EditForm Model="presupuesto" OnValidSubmit="Guardar">
     <DataAnnotationsValidator />
-    <div class="container">
+    <div class="card">
         <div class="card-header bg-warning text-center">
             <h1><strong>Editar Presupuesto</strong></h1>
         </div>
@@ -38,10 +38,13 @@
                     <ValidationMessage For="@(() => presupuesto.FechaFin)" />
                 </div>
             </div>
-            <hr />
-            <div class="card-header text-center bg-warning">
-                <h2><strong>Detalle del Presupuesto</strong></h2>
-            </div>
+        </div>
+        <hr />
+
+        <div class="card-header text-center bg-warning">
+            <h2><strong>Detalle del Presupuesto</strong></h2>
+        </div>
+        <div class="card-body">
             <div class="row">
                 <div class="col-md-6">
                     <label>Descripci&oacute;n</label>
@@ -56,7 +59,7 @@
                 </div>
             </div>
             <div>
-                <table class="table table-bordered">
+                <table class="table table-bordered text-center">
                     <thead>
                         <tr>
                             <th>Descripci&oacute;n</th>
@@ -78,7 +81,7 @@
                     </tbody>
                 </table>
             </div>
-            <p>Los Gastos Totales: @MontoTotalGastos</p>
+            <p>Los Gastos Totales: @TotalGasto</p>
         </div>
         <div class="card-footer text-center">
             <div class="text-end">
@@ -94,7 +97,7 @@
     public Presupuestos presupuesto { get; set; } = new Presupuestos();
     public DetalleGastoPresupuestos detalle { get; set; } = new DetalleGastoPresupuestos();
     public bool hayPresupuesto = false;
-    public float MontoTotalGastos => presupuesto.DetallesGastosPresupuesto.Sum(d => d.Monto);
+    public float TotalGasto => presupuesto.DetallesGastosPresupuesto.Sum(d => d.Monto);
     public List<ToastMessage> messages = new List<ToastMessage>();
     public void Notificacion(ToastType toastType, string message) => messages.Add(ShowToast(toastType, message));
     private ToastMessage ShowToast(ToastType toastType, string message)
@@ -123,6 +126,7 @@
         if (guardo)
         {
             Notificacion(ToastType.Success, "El presupuesto se ha creado correctamente");
+            await Volver();
             return;
         }
     }

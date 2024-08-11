@@ -5,7 +5,7 @@
 
 <EditForm Model="presupuesto" OnValidSubmit="Guardar">
     <DataAnnotationsValidator />
-    <div class="container">
+    <div class="card">
         <div class="card-header bg-warning text-center">
             <h1><strong>Editar Presupuesto</strong></h1>
         </div>
@@ -38,10 +38,12 @@
                     <ValidationMessage For="@(() => presupuesto.FechaFin)" />
                 </div>
             </div>
+            </div>
             <hr />
             <div class="card-header text-center bg-warning">
                 <h2><strong>Detalle del Presupuesto</strong></h2>
             </div>
+            <div class="card-body">
             <div class="row">
                 <div class="col-md-6">
                     <label>Descripci&oacute;n</label>
@@ -56,7 +58,7 @@
                 </div>
             </div>
             <div>
-                <table class="table table-bordered">
+                <table class="table table-bordered text-center">
                     <thead>
                         <tr>
                             <th>Descripci&oacute;n</th>

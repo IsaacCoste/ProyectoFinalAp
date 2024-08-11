@@ -3,50 +3,51 @@
 @inject NavigationManager NavigationManager
 @rendermode InteractiveServer
 
-<div class="container-fluid">
+<div class="card">
     <div class="card-header bg-warning text-center borderRegistro">
         <h1>Presupuestos</h1>
     </div>
-    
-    <div class="row align-items-end justify-content-end mb-4">
-        <div class="col-md-3">
-            <label for="Filtro" class="form-label"><strong>Filtrar por:</strong></label>
-            <InputSelect id="filtro" class="form-select" @bind-Value="filtro">
-                <option value="" disabled>Seleccionar</option>
-                <option value="PresupuestoId">PresupuestoId</option>
-                <option value="Descripcion">Descripcion</option>
-                <option value="MontoAsignado">MontoAsignado</option>
-            </InputSelect>
-        </div>
-        <div class="col-md-6">
-            <label for="ValorFiltro" class="form-label"><strong>B&uacute;squeda:</strong></label>
-            <div class="input-group">
-                <input @bind="valorFiltro" class="form-control" placeholder="Buscar" />
-                <button @onclick="Buscar" class="btn btn-primary" type="button">
-                    <span class="bi bi-search"></span> Buscar
-                </button>
+
+    <div class="card-body">
+        <div class="row align-items-end justify-content-end mb-4">
+            <div class="col-4">
+                <label for="Filtro" class="form-label"><strong>Filtrar por:</strong></label>
+                <InputSelect id="filtro" class="form-select" @bind-Value="filtro">
+                    <option value="" disabled>Seleccionar</option>
+                    <option value="PresupuestoId">PresupuestoId</option>
+                    <option value="Descripcion">Descripcion</option>
+                    <option value="MontoAsignado">MontoAsignado</option>
+                </InputSelect>
+            </div>
+            <div class="col-md-6">
+                <label for="ValorFiltro" class="form-label"><strong>B&uacute;squeda:</strong></label>
+                <div class="input-group">
+                    <input @bind="valorFiltro" class="form-control" placeholder="Buscar" />
+                    <button @onclick="Buscar" class="btn btn-primary" type="button">
+                        <span class="bi bi-search"></span> Buscar
+                    </button>
+                </div>
+            </div>
+            <div class="col">
+                <a href="/presupuestos/crear" class="btn btn-primary bi bi-plus">Crear</a>
+                <a href="/Dashboard" class="btn btn-outline-success bi bi-arrow-left">Volver</a>
             </div>
         </div>
-        <div class="col">
-            <a href="/presupuestos/crear" class="btn btn-primary bi bi-plus">Crear</a>
-            <a href="#" class="btn btn-outline-success bi bi-arrow-left">Volver</a>
-        </div>
-    </div>
 
-    <div class="col-8">
-        <label class="fw-bold">Filtrar por Fecha:</label>
+        <div class="col-8">
+            <label class="fw-bold">Filtrar por Fecha:</label>
 
-        <div class="input-group">
-            <label class="input-group-text bg-primary text-white">Desde</label>
-            <input type="date" class="form-control" @bind="fechaDesde">
-            <span class="input-group-text bg-primary text-white">Hasta</span>
-            <input type="date" class="form-control" @bind="fechaHasta">
-            <button class="btn btn-outline-primary" @onclick="BuscarFecha"><i class="fas fa-search"></i> Buscar</button>
+            <div class="input-group">
+                <label class="input-group-text bg-primary text-white">Desde</label>
+                <input type="date" class="form-control" @bind="fechaDesde">
+                <span class="input-group-text bg-primary text-white">Hasta</span>
+                <input type="date" class="form-control" @bind="fechaHasta">
+                <button class="btn btn-outline-primary" @onclick="BuscarFecha"><i class="fas fa-search"></i> Buscar</button>
+            </div>
         </div>
-    </div>
-    
-    <div class="card-body">
-        <table class="table table-bordered miTabla">
+
+
+        <table class="table table-bordered text-center mt-5">
             <thead>
                 <tr>
                     <th>PresupuestoId</th>
