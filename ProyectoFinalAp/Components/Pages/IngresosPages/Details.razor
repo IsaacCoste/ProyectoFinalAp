@@ -1,0 +1,78 @@
+﻿@page "/ingresos/ver/{IngresoId:int}"
+@inject IngresosService ingresoService
+@inject NavigationManager navigation
+@rendermode InteractiveServer
+
+<div class="card mt-4">
+    <div class="card-header bg-warning text-center">
+        <h1 class="text-white"><strong>Detalles del ingreso</strong></h1>
+    </div>
+    <div class="card-body">
+        <div class="row mb-3">
+            <div class="col-md-4">
+                <div class="bg-success text-white p-2">ID:</div>
+                <div class="p-2">@ingreso.IngresoId</div>
+            </div>
+            <div class="col-md-4">
+                <div class="bg-success text-white p-2">Fecha:</div>
+                <div class="p-2">@ingreso.Fecha.ToString("dd/MM/yyyy")</div>
+            </div>
+            <div class="col-md-4">
+                <div class="bg-success text-white p-2">CategoriaId:</div>
+                <div class="p-2">@ingreso.CategoriaId</div>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-md-4">
+                <div class="bg-success text-white p-2">Concepto:</div>
+                <div class="p-2">@ingreso.Concepto</div>
+            </div>
+            <div class="col-md-4">
+                <div class="bg-success text-white p-2">Monto:</div>
+                <div class="p-2">@ingreso.Monto</div>
+            </div>
+        </div>
+    </div>
+    <div class="card-footer bg-light text-end">
+        <a type="button" @onclick="Volver" class="btn btn-outline-success">
+            <i class="bi bi-arrow-left" /> Volver
+        </a>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public int ingresoId { get; set; }
+    public Ingresos ingreso { get; set; } = new Ingresos();
+    public List<Categorias> listCategorias { get; set; } = new List<Categorias>();
+    public List<ToastMessage> messages = new List<ToastMessage>();
+    public void Notificacion(ToastType toastType, string message) => messages.Add(ShowToast(toastType, message));
+    private ToastMessage ShowToast(ToastType toastType, string message)
+    {
+        var mensaje = new ToastMessage()
+            {
+                Type = toastType,
+                Message = $"{message}. El {DateTime.Now.ToString("dd/MM/yyyy")} a las {DateTime.Now.ToString("hh:mm tt")}",
+            };
+        toastService.Notify(mensaje);
+        return mensaje;
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        ingreso = await ingresoService.Buscar(ingresoId);
+    }
+    public async Task Eliminar()
+    {
+        await ingresoService.Eliminar(ingresoId);
+        Notificacion(ToastType.Warning, "Se eliminaron los datos correctamente.");
+        await Task.Delay(1500);
+        await Volver();
+    }
+    public Task Volver()
+    {
+        navigation.NavigateTo("/ingresos/index/");
+        return Task.CompletedTask;
+    }
+}
+
