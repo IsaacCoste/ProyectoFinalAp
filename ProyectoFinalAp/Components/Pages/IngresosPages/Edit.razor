@@ -62,6 +62,7 @@
 
     protected override async Task OnInitializedAsync()
     {
+        Ingreso = await ingresoService.Buscar(IngresoId);
         ListCategorias = await catedoriaService.Listar(c => true);
     }
 
