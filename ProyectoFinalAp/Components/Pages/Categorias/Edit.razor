@@ -10,32 +10,33 @@
 
 <EditForm Model="categoria" OnValidSubmit="Modificar">
     <DataAnnotationsValidator />
-    <div class="container">
+    <div class="card">
         <div class="card-header bg-warning text-center">
             <h1>Editar Categoria</h1>
         </div>
-        <div class="row">
-            <div class="col-md-4">
-                <label>ID</label>
-                <InputNumber @bind-Value="categoria.CategoriaId" class="form-control" disabled />
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-4">
+                    <label>ID</label>
+                    <InputNumber @bind-Value="categoria.CategoriaId" class="form-control" disabled />
+                </div>
             </div>
-        </div>
-        <div class="row">
-            <div class="col-md-4">
-                <label>Nombre</label>
-                <InputText @bind-Value="categoria.Nombre" class="form-control" />
-                <ValidationMessage For="@(() => categoria.Nombre)" />
-            </div>
-            <div class="col-md-4">
-                <label>Tipo</label>
-                <InputText @bind-Value="categoria.Tipo" class="form-control" />
-                <ValidationMessage For="@(() => categoria.Tipo)" />
+            <div class="row">
+                <div class="col-md-4">
+                    <label>Nombre</label>
+                    <InputText @bind-Value="categoria.Nombre" class="form-control" />
+                    <ValidationMessage For="@(() => categoria.Nombre)" />
+                </div>
+                <div class="col-md-4">
+                    <label>Tipo</label>
+                    <InputText @bind-Value="categoria.Tipo" class="form-control" />
+                    <ValidationMessage For="@(() => categoria.Tipo)" />
+                </div>
             </div>
         </div>
         <div class="card-footer text-center">
             <button class="btn btn-success">Modificar <i class="bi bi-floppy-fill" /></button>
             <button class="btn btn-outline-primary" @onclick="Volver">Volver <i class="bi bi-arrow-return-left" /></button>
-
         </div>
     </div>
 </EditForm>

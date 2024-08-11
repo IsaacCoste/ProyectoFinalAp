@@ -8,7 +8,7 @@
 
 @* @attribute [Authorize(Roles = "Admin")] *@
 
-<div class="container">
+<div class="card">
     <div class="card-header bg-warning text-center">
         <h1>Eliminar Categoria</h1>
     </div>
@@ -28,10 +28,10 @@
                 <dd class="col-sm-9">@categoria.Tipo</dd>
             </div>
         </dl>
-        <div class="card-footer text-center">
-            <button type="button" class="btn btn-danger" @onclick="Eliminar">Eliminar <i class="bi bi-trash3" /></button>
-            <button type="button" class="btn btn-outline-primary" @onclick="Volver">Volver <i class="bi bi-arrow-return-left" /></button>
-        </div>
+    </div>
+    <div class="card-footer text-center">
+        <button type="button" class="btn btn-danger" @onclick="Eliminar">Eliminar <i class="bi bi-trash3" /></button>
+        <button type="button" class="btn btn-outline-primary" @onclick="Volver">Volver <i class="bi bi-arrow-return-left" /></button>
     </div>
 </div>
 
