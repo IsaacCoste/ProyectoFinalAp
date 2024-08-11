@@ -20,7 +20,7 @@ Clave: Alexby@1
 
 Email: isaac24.coste@gmail.com
 
-Clve: Aplicada1@.
+Clve: Aplicada1.
 
 # **Funcionalidades** ⚙️
 
