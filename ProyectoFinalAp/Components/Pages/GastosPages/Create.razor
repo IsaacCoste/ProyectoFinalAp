@@ -79,7 +79,7 @@
 
     private async Task<bool> Validar()
     {
-        hayGasto = await gastosService.Existe(gasto.GastoId);
+        hayGasto = await gastosService.Existe(gasto.GastoId, gasto.Fecha);
         return !hayGasto;
     }
     public async Task Guardar()
