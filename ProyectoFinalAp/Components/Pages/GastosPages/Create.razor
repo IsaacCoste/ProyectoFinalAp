@@ -8,41 +8,44 @@
 
 <EditForm Model="gasto" OnValidSubmit="Guardar">
     <DataAnnotationsValidator />
-    <div class="container">
+    <div class="card">
         <div class="card-header bg-warning text-center">
             <h1>Crear Gastos</h1>
         </div>
-        <div class="row">
-            <div class="col-md-4">
-                <label>ID</label>
-                <InputNumber @bind-Value="gasto.GastoId" class="form-control" disabled />
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-4">
+                    <label>ID</label>
+                    <InputNumber @bind-Value="gasto.GastoId" class="form-control" disabled />
+                </div>
+                <div class="col-md-4">
+                    <label>Categoría</label>
+                    <InputSelect @bind-Value="gasto.CategoriaId" class="form-control">
+                        <option value="">Seleccione una categoría</option>
+                        @foreach (var categoria in categorias)
+                        {
+                            <option value="@categoria.CategoriaId">@categoria.Nombre</option>
+                        }
+                    </InputSelect>
+                    <ValidationMessage For="@(() => gasto.CategoriaId)" />
+                </div>
+                <div class="col-md-4">
+                    <label>Fecha</label>
+                    <InputDate @bind-Value="gasto.Fecha" class="form-control" />
+                    <ValidationMessage For="@(() => gasto.Fecha)" />
+                </div>
             </div>
-            <div class="col-md-4">
-                <label>Categoría</label>
-                <InputSelect @bind-Value="gasto.CategoriaId" class="form-control">
-                    <option value="">Seleccione una categoría</option>
-                    @foreach (var categoria in categorias)
-                    {
-                        <option value="@categoria.CategoriaId">@categoria.Nombre</option>
-                    }
-                </InputSelect>
-            </div>
-            <div class="col-md-4">
-                <label>Fecha</label>
-                <InputDate @bind-Value="gasto.Fecha" class="form-control" />
-                <ValidationMessage For="@(() => gasto.Fecha)" />
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-4">
-                <label>Concepto</label>
-                <InputText @bind-Value="gasto.Concepto" class="form-control" />
-                <ValidationMessage For="@(() => gasto.Concepto)" />
-            </div>
-            <div class="col-md-4">
-                <label>Monto</label>
-                <InputNumber @bind-Value="gasto.Monto" class="form-control" />
-                <ValidationMessage For="@(() => gasto.Monto)" />
+            <div class="row">
+                <div class="col-md-4">
+                    <label>Concepto</label>
+                    <InputText @bind-Value="gasto.Concepto" class="form-control" />
+                    <ValidationMessage For="@(() => gasto.Concepto)" />
+                </div>
+                <div class="col-md-4">
+                    <label>Monto</label>
+                    <InputNumber @bind-Value="gasto.Monto" class="form-control" />
+                    <ValidationMessage For="@(() => gasto.Monto)" />
+                </div>
             </div>
         </div>
         <div class="card-footer text-center">
