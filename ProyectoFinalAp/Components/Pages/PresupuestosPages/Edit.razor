@@ -48,10 +48,12 @@
                 <div class="col-md-6">
                     <label>Descripci&oacute;n</label>
                     <InputText @bind-Value="detalle.Descripcion" class="form-control" placeholder="Descripci&oacute;n del gasto" />
+                    <ValidationMessage For="@(() => detalle.Descripcion)" />
                 </div>
                 <div class="col-md-6">
                     <label>Monto</label>
                     <InputNumber @bind-Value="detalle.Monto" class="form-control" placeholder="Monto del gasto" />
+                    <ValidationMessage For="@(() => detalle.Monto)" />
                 </div>
                 <div class="text-end mb-2">
                     <button type="button" class="btn btn-outline-success" @onclick="AgregarDetalle"><i class="bi bi-floppy-fill"></i> Agregar</button>
