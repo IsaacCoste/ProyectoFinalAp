@@ -9,6 +9,7 @@ public class Gastos
     public int GastoId { get; set; }
     [ForeignKey("CategoriaId")]
     public int CategoriaId { get; set; }
+    public Categorias Categoria { get; set; }
 
     [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
     [Required(ErrorMessage = "Ingrese la Fecha.")]
@@ -20,6 +21,5 @@ public class Gastos
 
     [Required(ErrorMessage = "Ingrese un Monto")]
     [Range(0.1, 20000000, ErrorMessage = "El rango del monto debe estar entre 0.1 y 20000000")]
-    [RegularExpression(@"^[0-9]", ErrorMessage = "Solo se permiten números")]
     public float Monto { get; set; }
 }
