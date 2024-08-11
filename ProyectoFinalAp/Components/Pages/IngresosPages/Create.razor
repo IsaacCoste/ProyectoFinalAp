@@ -2,6 +2,7 @@
 @inject IngresosService ingresoService
 @inject CategoriasService catedoriaService
 @inject NavigationManager NavigationManager
+@rendermode InteractiveServer
 
 <EditForm Model="Ingreso" OnValidSubmit="Guardar" FormName="CreateIngresoForm">
     <div class="card">
@@ -11,19 +12,19 @@
         <div class="card-body">
             <div class="row">
                 <div class="col-6">
-                    <label for="IngresoId" class="form-label"><strong>IngresoId</strong></label>
-                    <InputNumber id="IngresoId" class="form-control" @bind-Value="Ingreso.IngresoId" disabled />
+                    <label class="form-label"><strong>IngresoId</strong></label>
+                    <InputNumber  class="form-control" @bind-Value="Ingreso.IngresoId" disabled />
                 </div>
                 <div class="col-6">
-                    <label for="Fecha" class="form-label"><strong>Fecha:</strong></label>
-                    <InputDate id="Fecha" class="form-control" @bind-Value="Ingreso.Fecha" />
+                    <label class="form-label"><strong>Fecha:</strong></label>
+                    <InputDate class="form-control" @bind-Value="Ingreso.Fecha" />
                     <ValidationMessage For="@(() => Ingreso.Fecha)" />
                 </div>
             </div>
             <div class="row">
                 <div class="col-6 mt-2">
-                    <label for="CategoriaId" class="form-label"><strong>Categoria:</strong></label>
-                    <InputSelect id="CategoriaId" class="form-select" @bind-Value="Ingreso.CategoriaId">
+                    <label class="form-label"><strong>Categoria:</strong></label>
+                    <InputSelect class="form-select" @bind-Value="Ingreso.CategoriaId">
                         <option value="" disabled>Seleccionar</option>
                         @foreach (var categoria in ListCategorias)
                         {
@@ -34,27 +35,25 @@
                 </div>
             
                 <div class="col-6 mt-2">
-                    <label for="Concepto" class="form-label"><strong>Concepto:</strong></label>
-                    <InputText id="Concepto" class="form-control" @bind-Value="Ingreso.Concepto" />
+                    <label class="form-label"><strong>Concepto:</strong></label>
+                    <InputText class="form-control" @bind-Value="Ingreso.Concepto" />
                     <ValidationMessage For="@(() => Ingreso.Concepto)" />
                 </div>
                 <div class="col-6 ">
-                    <label for="Monto" class="form-label"><strong>Monto:</strong></label>
-                    <InputNumber id="Monto" class="form-control" @bind-Value="Ingreso.Monto" />
+                    <label class="form-label"><strong>Monto:</strong></label>
+                    <InputNumber class="form-control" @bind-Value="Ingreso.Monto" />
                     <ValidationMessage For="@(() => Ingreso.Monto)" />
                 </div>
             </div>
         </div>
         <div class="card-footer text-center">
-            <button @onclick="Guardar" class="btn btn-primary"><i class="bi bi-floppy-fill"></i> Guardar</button>
+            <button type="submit" class="btn btn-primary"><i class="bi bi-floppy-fill"></i> Guardar</button>
             <button class="btn btn-success" @onclick="Volver"><i class="bi bi-arrow-left"></i> Volver</button>
         </div>
     </div>
 </EditForm>
 
 @code {
-    [Parameter]
-    public int IngresoId { get; set; }
     public Ingresos Ingreso { get; set; } = new Ingresos();
     public List<Categorias> ListCategorias { get; set; } = new List<Categorias>();
     public bool hayingreso = false;
