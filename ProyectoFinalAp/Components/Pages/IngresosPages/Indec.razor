@@ -1,0 +1,166 @@
+﻿@page "/ingresos/index/"
+@inject IngresosService ingresoService
+@inject NavigationManager NavigationManager
+@rendermode InteractiveServer
+
+<div class="card">
+    <div class="card-header bg-warning text-center borderRegistro">
+        <h1>Ingresos</h1>
+    </div>
+    <div class="card-body">
+        <div class="row align-items-end justify-content-end mb-4">
+            <div class="col-md-3">
+                <label for="Filtro" class="form-label"><strong>Filtrar por:</strong></label>
+                <InputSelect id="filtro" class="form-select" @bind-Value="filtro">
+                    <option value="" disabled>Seleccionar</option>
+                    <option value="IngresoId">IngresoId</option>
+                    <option value="CategoriaId">CategoriaId</option>
+                    <option value="Concepto">Concepto</option>
+                    <option value="Monto">Monto</option>
+
+                </InputSelect>
+            </div>
+            <div class="col-md-6">
+                <label for="ValorFiltro" class="form-label"><strong>B&uacute;squeda:</strong></label>
+                <div class="input-group">
+                    <input @bind="valorFiltro" class="form-control" placeholder="Buscar" />
+                    <button @onclick="Buscar" class="btn btn-primary" type="button">
+                        <span class="bi bi-search"></span> Buscar
+                    </button>
+                </div>
+            </div>
+            <div class="col">
+                <a href="/ingresos/crear" class="btn btn-primary bi bi-plus">Crear</a>
+                <a href="/Dashboard" class="btn btn-outline-success bi bi-arrow-left">Volver</a>
+            </div>
+        </div>
+
+        <div class="col-8">
+            <label class="fw-bold">Filtrar por Fecha:</label>
+
+            <div class="input-group">
+                <label class="input-group-text bg-primary text-white">Desde</label>
+                <input type="date" class="form-control" @bind="fechaDesde">
+                <span class="input-group-text bg-primary text-white">Hasta</span>
+                <input type="date" class="form-control" @bind="fechaHasta">
+                <button class="btn btn-outline-primary" @onclick="BuscarFecha"><i class="fas fa-search"></i> Buscar</button>
+            </div>
+        </div>
+
+        <table class="table table-bordered text-center mt-5">
+            <thead>
+                <tr>
+                    <th>IngresoId</th>
+                    <th>Fecha</th>
+                    <th>CategoriaId</th>
+                    <th>Concepto</th>
+                    <th>Monto</th>
+                    <th>Ver</th>
+                    <th>Editar</th>
+                    <th>Eliminar</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                @if (Listingresos.Any())
+                {
+                    @foreach (var ingreso in Listingresos)
+                    {
+                        <tr>
+                            <td>@ingreso.IngresoId</td>
+                            <td>@ingreso.Fecha.ToString("dd/MM/yyyy")</td>
+                            <td>@ingreso.CategoriaId</td>
+                            <td>@ingreso.Concepto</td>
+                            <td>@ingreso.Monto</td>
+                            <td>
+                                <button type="button" class="btn btn-outline-info" @onclick="()=> Ver(ingreso.IngresoId)" data-bs-toggle="tooltip" data-bs-placement="top" title="Ver detalles">
+                                    <i class="bi bi-eye"></i>
+                                </button>
+                            </td>
+                            <td>
+                                <button type="button" class="btn btn-outline-warning" @onclick="()=> Editar(ingreso.IngresoId)" data-bs-toggle="tooltip" data-bs-placement="top" title="Editar">
+                                    <i class="bi bi-pencil-square"></i>
+                                </button>
+                            </td>
+                            <td>
+                                <button type="button" class="btn btn-outline-danger" @onclick="()=> Eliminar(ingreso.IngresoId)" data-bs-toggle="tooltip" data-bs-placement="top" title="Eliminar">
+                                    <i class="bi bi-trash3-fill"></i>
+                                </button>
+
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="8" class="text-center"> <label>No hay ingresos disponibles</label> </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <div class="card-footer">
+        <p><strong>Total de ingresos:</strong> @Listingresos.Count</p>
+    </div>
+</div>
+
+@code {
+    public List<Ingresos> Listingresos { get; set; } = new List<Ingresos>();
+    private string filtro = "";
+    private string valorFiltro = "";
+    public DateTime fechaDesde = DateTime.Now;
+    public DateTime fechaHasta = DateTime.Now;
+    protected override async Task OnInitializedAsync()
+    {
+        Listingresos = await ingresoService.Listar(i => true);
+    }
+    public async Task Buscar()
+    {
+        if (!string.IsNullOrWhiteSpace(valorFiltro))
+        {
+            if (filtro == "IngresoId" && int.TryParse(valorFiltro, out int IngresoId))
+            {
+                Listingresos = await ingresoService.Listar(p => p.IngresoId == IngresoId);
+            }
+            else if (filtro == "Concepto")
+            {
+                Listingresos = await ingresoService.Listar(p => p.Concepto.ToLower().Contains(valorFiltro.ToLower()));
+            }
+            else if (filtro == "CategoriaId" && int.TryParse(valorFiltro, out int CategoriaId))
+            {
+                Listingresos = await ingresoService.Listar(p => p.CategoriaId == CategoriaId);
+            }
+            else if (filtro == "Monto" && float.TryParse(valorFiltro, out float Monto))
+            {
+                Listingresos = await ingresoService.Listar(p => p.Monto == Monto);
+            }
+        }
+    }
+    public async Task BuscarFecha()
+    {
+        if (fechaDesde != null && fechaHasta != null && fechaDesde <= fechaHasta)
+        {
+            Listingresos = await ingresoService.Listar(p => p.Fecha >= fechaDesde && p.Fecha <= fechaHasta);
+        }
+        else
+        {
+            Listingresos = await ingresoService.Listar(p => true);
+        }
+    }
+    public Task Ver(int id)
+    {
+        NavigationManager.NavigateTo($"/ingresos/ver/{id}");
+        return Task.CompletedTask;
+    }
+    public Task Editar(int id)
+    {
+        NavigationManager.NavigateTo($"/ingresos/editar/{id}");
+        return Task.CompletedTask;
+    }
+    public Task Eliminar(int id)
+    {
+        NavigationManager.NavigateTo($"/ingresos/eliminar/{id}");
+        return Task.CompletedTask;
+    }
+}
