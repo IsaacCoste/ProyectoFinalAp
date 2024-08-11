@@ -17,7 +17,9 @@ public class GastosService(ApplicationDbContext contexto)
     private async Task<bool> Modificar(Gastos gasto)
     {
         _contexto.Gastos.Update(gasto);
-        return await _contexto.SaveChangesAsync() > 0;
+        var modifico = await _contexto.SaveChangesAsync() > 0;
+        _contexto.Entry(gasto).State = EntityState.Detached;
+        return modifico;
     }
     public async Task<bool> Existe(int gastoId)
     {
@@ -32,10 +34,38 @@ public class GastosService(ApplicationDbContext contexto)
     }
     public async Task<bool> Guardar(Gastos gasto)
     {
+        var presupuesto = await _contexto.Presupuestos
+            .Where(p => p.FechaInicio <= gasto.Fecha && p.FechaFin >= gasto.Fecha)
+            .FirstOrDefaultAsync();
+
+        if (presupuesto == null)
+        {
+            return false;
+        }
+
+        var ingresosTotal = await _contexto.Ingresos
+            .Where(i => i.Fecha >= presupuesto.FechaInicio && i.Fecha <= presupuesto.FechaFin)
+            .SumAsync(i => i.Monto);
+
+        var gastosTotales = await _contexto.Gastos
+            .Where(g => g.Fecha >= presupuesto.FechaInicio && g.Fecha <= presupuesto.FechaFin)
+            .SumAsync(g => g.Monto);
+
+        var maximoGastoPermitido = Math.Min(presupuesto.MontoAsignado, ingresosTotal) - gastosTotales;
+
+        if (gasto.Monto > maximoGastoPermitido)
+        {
+            return false;
+        }
+
         if (!await Existe(gasto.GastoId))
+        {
             return await Insertar(gasto);
+        }
         else
+        {
             return await Modificar(gasto);
+        }
     }
     public async Task<bool> Eliminar(Gastos gasto)
     {
