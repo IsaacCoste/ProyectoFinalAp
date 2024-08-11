@@ -5,47 +5,47 @@
 
 @* @attribute [Authorize(Roles = "Admin")] *@
 
-<div class="container mt-4">
-    <div class="card">
-        <div class="card-header bg-warning text-center">
-            <h1 class="text-white"><strong>Detalles del Usuario</strong></h1>
-        </div>
-        <div class="card-body">
-            <div class="row mb-3">
-                <div class="col-md-4">
-                    <div class="bg-success text-white p-2">UsuarioId:</div>
-                    <div class="p-2">@usuario.UsuarioId</div>
-                </div>
-                <div class="col-md-4">
-                    <div class="bg-success text-white p-2">UserId:</div>
-                    <div class="p-2">@usuario.UserId</div>
-                </div>
-                <div class="col-md-4">
-                    <div class="bg-success text-white p-2">RolId:</div>
-                    <div class="p-2">@usuario.RolId</div>
-                </div>
+
+<div class="card">
+    <div class="card-header bg-warning text-center">
+        <h1 class="text-white"><strong>Detalles del Usuario</strong></h1>
+    </div>
+    <div class="card-body">
+        <div class="row mb-3">
+            <div class="col-md-4">
+                <div class="bg-success text-white p-2">UsuarioId:</div>
+                <div class="p-2">@usuario.UsuarioId</div>
             </div>
-            <div class="row mb-3">
-                <div class="col-md-4">
-                    <div class="bg-success text-white p-2">Nombre:</div>
-                    <div class="p-2">@usuario.Nombre</div>
-                </div>
-                <div class="col-md-4">
-                    <div class="bg-success text-white p-2">Fecha de Registro:</div>
-                    <div class="p-2">@usuario.FechaRegistro.ToString("dd/MM/yyyy")</div>
-                </div>
+            <div class="col-4">
+                <div class="bg-success text-white p-2">UserId:</div>
+                <div class="p-2">@usuario.UserId</div>
+            </div>
+            <div class="col-4">
+                <div class="bg-success text-white p-2">RolId:</div>
+                <div class="p-2">@usuario.RolId</div>
             </div>
         </div>
-        <div class="card-footer bg-light text-end">
-            <button type="button" class="btn btn-danger" @onclick="Eliminar">
-                <i class="bi bi-trash3" /> Eliminar
-            </button>
-            <button type="button" class="btn btn-outline-primary" @onclick="Volver">
-                <i class="bi bi-arrow-return-left" /> Volver
-            </button>
+        <div class="row mb-3">
+            <div class="col-4">
+                <div class="bg-success text-white p-2">Nombre:</div>
+                <div class="p-2">@usuario.Nombre</div>
+            </div>
+            <div class="col-4">
+                <div class="bg-success text-white p-2">Fecha de Registro:</div>
+                <div class="p-2">@usuario.FechaRegistro.ToString("dd/MM/yyyy")</div>
+            </div>
         </div>
     </div>
+    <div class="card-footer bg-light text-end">
+        <button type="button" class="btn btn-danger" @onclick="Eliminar">
+            <i class="bi bi-trash3" /> Eliminar
+        </button>
+        <button type="button" class="btn btn-outline-primary" @onclick="Volver">
+            <i class="bi bi-arrow-return-left" /> Volver
+        </button>
+    </div>
 </div>
+
 
 @code {
     [Parameter]

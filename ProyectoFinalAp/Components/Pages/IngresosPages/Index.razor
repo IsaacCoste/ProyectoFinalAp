@@ -3,6 +3,7 @@
 @inject NavigationManager NavigationManager
 @rendermode InteractiveServer
 
+@attribute [Authorize(Roles = "Admin, Usuario")]
 <div class="card">
     <div class="card-header bg-warning text-center borderRegistro">
         <h1>Ingresos</h1>
@@ -31,7 +32,6 @@
             </div>
             <div class="col">
                 <a href="/ingresos/crear" class="btn btn-primary bi bi-plus">Crear</a>
-                <a href="/gastos/index" class="btn btn-success bi bi-plus"> Gasto</a>
                 <a href="/Dashboard" class="btn btn-outline-success bi bi-arrow-left">Volver</a>
             </div>
         </div>

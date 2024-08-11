@@ -63,7 +63,7 @@
     protected override async Task OnInitializedAsync()
     {
         Ingreso = await ingresoService.Buscar(IngresoId);
-        ListCategorias = await catedoriaService.Listar(c => true);
+        ListCategorias = await catedoriaService.Listar(c => c.Tipo == "Ingreso");
     }
 
     private ToastMessage ShowToast(ToastType toastType, string message)

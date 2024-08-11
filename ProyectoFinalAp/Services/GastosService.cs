@@ -40,22 +40,22 @@ public class GastosService(ApplicationDbContext contexto)
 
         if (presupuesto == null)
         {
-            return false;
+            return false; 
         }
 
         var ingresosTotal = await _contexto.Ingresos
             .Where(i => i.Fecha >= presupuesto.FechaInicio && i.Fecha <= presupuesto.FechaFin)
-            .SumAsync(i => i.Monto);
+            .SumAsync(i => (float?)i.Monto) ?? 0f;
 
         var gastosTotales = await _contexto.Gastos
             .Where(g => g.Fecha >= presupuesto.FechaInicio && g.Fecha <= presupuesto.FechaFin)
-            .SumAsync(g => g.Monto);
+            .SumAsync(g => (float?)g.Monto) ?? 0f;
 
         var maximoGastoPermitido = Math.Min(presupuesto.MontoAsignado, ingresosTotal) - gastosTotales;
 
         if (gasto.Monto > maximoGastoPermitido)
         {
-            return false;
+            return false; 
         }
 
         if (!await Existe(gasto.GastoId))
@@ -67,10 +67,10 @@ public class GastosService(ApplicationDbContext contexto)
             return await Modificar(gasto);
         }
     }
-    public async Task<bool> Eliminar(Gastos gasto)
+    public async Task<bool> Eliminar(int id)
     {
         var cantidad = await _contexto.Gastos
-            .Where(g => g.GastoId == gasto.GastoId)
+            .Where(g => g.GastoId == id)
             .ExecuteDeleteAsync();
         return cantidad > 0;
     }

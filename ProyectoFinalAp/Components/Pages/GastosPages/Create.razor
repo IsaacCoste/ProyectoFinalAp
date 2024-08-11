@@ -1,5 +1,5 @@
 ﻿@page "/gastos/create"
-
+@inject CategoriasService categoriaService
 @inject GastosService gastosService
 @inject NavigationManager navigation
 @rendermode InteractiveServer
@@ -75,6 +75,7 @@
     protected override async Task OnInitializedAsync()
     {
         categorias = await gastosService.GetCategorias();
+        categorias = await categoriaService.Listar(c => c.Nombre == "Gasto");
     }
 
     private async Task<bool> Validar()

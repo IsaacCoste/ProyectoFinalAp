@@ -6,7 +6,7 @@
 
 <PageTitle>Create Categoria</PageTitle>
 
-@* @attribute [Authorize(Roles = "Admin")] *@
+@attribute [Authorize(Roles = "Admin")]
 
 <EditForm Model="categoria" OnValidSubmit="Guardar">
     <DataAnnotationsValidator />
@@ -29,7 +29,11 @@
                 </div>
                 <div class="col-md-4">
                     <label>Tipo</label>
-                    <InputText @bind-Value="categoria.Tipo" class="form-control" />
+                    <InputSelect @bind-Value="categoria.Tipo" class="form-select">
+                        <option value="">Seleccione un tipo</option>
+                        <option value="Ingreso">Ingreso</option>
+                        <option value="Gasto">Gasto</option>
+                    </InputSelect>
                     <ValidationMessage For="@(() => categoria.Tipo)" />
                 </div>
             </div>

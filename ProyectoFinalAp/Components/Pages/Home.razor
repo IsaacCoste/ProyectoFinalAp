@@ -1,5 +1,6 @@
 ﻿@page "/Dashboard"
 
+@attribute [Authorize(Roles = "Admin, Usuario")]
 <PageTitle>Finanzas Saludables</PageTitle>
 
 <div class="container px-4 px-lg-5">
@@ -21,8 +22,8 @@
             <div class="card h-100">
                 <img src="images/MonitorT.png" class="img-config" />
                 <div class="card-body">
-                    <h4 class="card-title">Monitor de Transacciones</h4>
-                    <p class="card-text">Monitoreo de ingresos y gastos interactivo.</p>
+                    <h4 class="card-title">Ingresos</h4>
+                    <p class="card-text">Monitoreo de ingresos.</p>
                 </div>
                 <div class="card-footer">
                     <a class="btn btn-primary btn-sm" href="/ingresos/index/">Ir</a>
@@ -50,6 +51,32 @@
                 </div>
                 <div class="card-footer">
                     <a class="btn btn-primary btn-sm" href="/categorias/index">Ir</a>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="cards">
+        <div class="col-md-4 mb-5">
+            <div class="card h-100">
+                <img src="images/MonitorT.png" class="img-config" />
+                <div class="card-body">
+                    <h4 class="card-title">Gastos</h4>
+                    <p class="card-text">Monitoreo de Gastos.</p>
+                </div>
+                <div class="card-footer">
+                    <a class="btn btn-primary btn-sm" href="/gastos/index">Ir</a>
+                </div>
+            </div>
+        </div>'
+        <div class="col-md-4 mb-5">
+            <div class="card h-100">
+                <img src="images/UsuarioIcon.png" class="img-config" />
+                <div class="card-body">
+                    <h4 class="card-title">Usuarios</h4>
+                    <p class="card-text">Monitoreo de Usuarios.</p>
+                </div>
+                <div class="card-footer">
+                    <a class="btn btn-primary btn-sm" href="/usuarios/index">Ir</a>
                 </div>
             </div>
         </div>

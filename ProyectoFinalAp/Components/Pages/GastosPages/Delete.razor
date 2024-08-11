@@ -65,7 +65,7 @@
     }
     public async Task Eliminar()
     {
-        await gastosService.Eliminar(gasto);
+        await gastosService.Eliminar(GastoId);
         Notificacion(ToastType.Warning, "Gasto eliminado");
         await Task.Delay(2000);
         await Volver();
