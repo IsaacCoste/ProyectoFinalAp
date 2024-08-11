@@ -1,0 +1,107 @@
+﻿@page "/ingresos/editar/{IngresoId:int}"
+@inject IngresosService ingresoService
+@inject CategoriasService catedoriaService
+@inject NavigationManager NavigationManager
+@rendermode InteractiveServer
+
+<EditForm Model="Ingreso" OnValidSubmit="Guardar" FormName="CreateIngresoForm">
+    <div class="card">
+        <div class="card-header bg-warning text-center borderRegistro">
+            <h1>Editar Ingreso</h1>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-6">
+                    <label class="form-label"><strong>IngresoId</strong></label>
+                    <InputNumber class="form-control" @bind-Value="Ingreso.IngresoId" disabled />
+                </div>
+                <div class="col-6">
+                    <label class="form-label"><strong>Fecha:</strong></label>
+                    <InputDate class="form-control" @bind-Value="Ingreso.Fecha" />
+                    <ValidationMessage For="@(() => Ingreso.Fecha)" />
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-6 mt-2">
+                    <label class="form-label"><strong>Categoria:</strong></label>
+                    <InputSelect class="form-select" @bind-Value="Ingreso.CategoriaId">
+                        <option value="" disabled>Seleccionar</option>
+                        @foreach (var categoria in ListCategorias)
+                        {
+                            <option value="@categoria.CategoriaId">@categoria.Nombre</option>
+                        }
+                    </InputSelect>
+                    <ValidationMessage For="@(() => Ingreso.CategoriaId)" />
+                </div>
+
+                <div class="col-6 mt-2">
+                    <label class="form-label"><strong>Concepto:</strong></label>
+                    <InputText class="form-control" @bind-Value="Ingreso.Concepto" />
+                    <ValidationMessage For="@(() => Ingreso.Concepto)" />
+                </div>
+                <div class="col-6 ">
+                    <label class="form-label"><strong>Monto:</strong></label>
+                    <InputNumber class="form-control" @bind-Value="Ingreso.Monto" />
+                    <ValidationMessage For="@(() => Ingreso.Monto)" />
+                </div>
+            </div>
+        </div>
+        <div class="card-footer text-center">
+            <button type="submit" class="btn btn-primary"><i class="bi bi-floppy-fill"></i> Guardar</button>
+            <button class="btn btn-success" @onclick="Volver"><i class="bi bi-arrow-left"></i> Volver</button>
+        </div>
+    </div>
+</EditForm>
+
+@code {
+    [Parameter]
+    public int IngresoId { get; set; }
+    public Ingresos Ingreso { get; set; } = new Ingresos();
+    public List<Categorias> ListCategorias { get; set; } = new List<Categorias>();
+    public bool hayingreso = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        ListCategorias = await catedoriaService.Listar(c => true);
+    }
+
+    private ToastMessage ShowToast(ToastType toastType, string message)
+    {
+        var mensaje = new ToastMessage
+            {
+                Type = toastType,
+                Message = $"{message}. El {DateTime.Now.ToString("dd/MM/yyyy")} a las {DateTime.Now.ToString("hh:mm tt")}",
+            };
+        toastService.Notify(mensaje);
+        return mensaje;
+    }
+
+    private async Task<bool> Validar()
+    {
+        hayingreso = await ingresoService.Existe(Ingreso.IngresoId, Ingreso.Fecha);
+        return !hayingreso;
+    }
+
+    public async Task Guardar()
+    {
+        if (!await Validar())
+        {
+            ShowToast(ToastType.Warning, "Intente con otro");
+            return;
+        }
+        var guardo = await ingresoService.Guardar(Ingreso);
+        if (guardo)
+        {
+            ShowToast(ToastType.Success, "Se Guardaron los datos correctamente.");
+            await Volver();
+        }
+        else
+            ShowToast(ToastType.Warning, "Ha ocurrido un error.");
+    }
+
+    public async Task Volver()
+    {
+        NavigationManager.NavigateTo("/ingresos/index/");
+        await Task.CompletedTask;
+    }
+}
