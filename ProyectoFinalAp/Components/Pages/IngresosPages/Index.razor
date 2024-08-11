@@ -102,7 +102,15 @@
         </table>
     </div>
     <div class="card-footer">
-        <p><strong>Total de ingresos:</strong> @Listingresos.Count</p>
+        <div class="d-flex justify-content-between align-items-center">
+            <div class="col-5">
+                <strong>Total de ingresos: @Listingresos.Count</strong>
+            </div>
+            <div>
+                <strong>Cantidad de Ingresos: @totalIngresos</strong>
+            </div>
+        </div>
+
     </div>
 </div>
 
@@ -110,6 +118,7 @@
     public List<Ingresos> Listingresos { get; set; } = new List<Ingresos>();
     private string filtro = "";
     private string valorFiltro = "";
+    public float totalIngresos => Listingresos.Sum(p => p.Monto);
     public DateTime fechaDesde = DateTime.Now;
     public DateTime fechaHasta = DateTime.Now;
     protected override async Task OnInitializedAsync()
