@@ -8,6 +8,7 @@ public class Gastos
     [Key]
     public int GastoId { get; set; }
     [ForeignKey("CategoriaId")]
+    [Required(ErrorMessage = "La categoría es obligatoria.")]
     public int CategoriaId { get; set; }
     public Categorias Categoria { get; set; }
 
