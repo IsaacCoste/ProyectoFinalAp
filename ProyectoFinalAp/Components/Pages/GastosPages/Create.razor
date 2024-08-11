@@ -18,8 +18,14 @@
                 <InputNumber @bind-Value="gasto.GastoId" class="form-control" disabled />
             </div>
             <div class="col-md-4">
-                <label>CategoriaId</label>
-                <InputNumber @bind-Value="gasto.CategoriaId" class="form-control" />
+                <label>Categoría</label>
+                <InputSelect @bind-Value="gasto.CategoriaId" class="form-control">
+                    <option value="">Seleccione una categoría</option>
+                    @foreach (var categoria in categorias)
+                    {
+                        <option value="@categoria.CategoriaId">@categoria.Nombre</option>
+                    }
+                </InputSelect>
             </div>
             <div class="col-md-4">
                 <label>Fecha</label>
@@ -48,6 +54,7 @@
 
 @code {
     public Gastos gasto { get; set; } = new Gastos();
+    public List<Categorias> categorias { get; set; } = new List<Categorias>();
     public bool hayGasto = false;
     public List<ToastMessage> messages = new List<ToastMessage>();
     public void Notificacion(ToastType toastType, string message) => messages.Add(ShowToast(toastType, message));
@@ -60,6 +67,11 @@
             };
         toastService.Notify(mensaje);
         return mensaje;
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        categorias = await gastosService.GetCategorias();
     }
 
     private async Task<bool> Validar()
