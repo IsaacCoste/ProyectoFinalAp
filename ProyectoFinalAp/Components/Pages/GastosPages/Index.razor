@@ -1,0 +1,128 @@
+﻿@page "/gastos/index"
+
+@inject GastosService gastosService
+@inject NavigationManager navigation
+@rendermode InteractiveServer
+
+<PageTitle>Index Gastos</PageTitle>
+
+<div class="container">
+    <div class="card-header bg-warning text-center">
+        <h1>Lista de Gastos</h1>
+    </div>
+    <div class="row mb-3">
+        <div class="col-md-3">
+            <label for="Filtro" class="form-label"><strong>Filtrar por:</strong></label>
+            <InputSelect id="filtro" class="form-select" @bind-Value="filtro">
+                <option value="" disabled>Seleccionar</option>
+                <option value="Id">GastoId</option>
+                <option value="Concepto">Concepto</option>
+            </InputSelect>
+        </div>
+        <div class="col-md-6">
+            <label for="ValorFiltro" class="form-label"><strong>B&uacute;squeda:</strong></label>
+            <div class="input-group">
+                <input @bind="valorFiltro" class="form-control" placeholder="Buscar" />
+                <button @onclick="Buscar" class="btn btn-primary" type="button">
+                    <span class="bi bi-search"></span> Buscar
+                </button>
+            </div>
+        </div>
+        <div class="col-md-3 d-flex align-items-end justify-content-end">
+            <button class="btn btn-primary" @onclick="Crear">Crear</button>
+        </div>
+    </div>
+    <div class="card-body">
+        <table class="table table-bordered miTabla">
+            <thead>
+                <tr>
+                    <th>GastoId</th>
+                    <th>Categoria</th>
+                    <th>Fecha</th>
+                    <th>Concepto</th>
+                    <th>Monto</th>
+                    <th>Editar</th>
+                    <th>Eliminar</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (ListGastos.Any())
+                {
+                    @foreach (var gasto in ListGastos)
+                    {
+                        <tr>
+                            <td>@gasto.GastoId</td>
+                            <td>@gasto.Categoria.Nombre</td>
+                            <td>@gasto.Fecha</td>
+                            <td>@gasto.Concepto</td>
+                            <td>@gasto.Monto</td>
+                            <td>
+                                <button type="button" class="btn btn-outline-warning" @onclick="()=> Editar(gasto.GastoId)" data-bs-toggle="tooltip" data-bs-placement="top" title="Editar">
+                                    <i class="bi bi-pencil-square"></i>
+                                </button>
+                            </td>
+                            <td>
+                                <button type="button" class="btn btn-outline-danger" @onclick="()=> Eliminar(gasto.GastoId)" data-bs-toggle="tooltip" data-bs-placement="top" title="Eliminar">
+                                    <i class="bi bi-trash3-fill"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="7" class="text-center"> <label>No hay Categorias disponibles</label> </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <div class="card-footer">
+        <p><strong>Total de Gastos:</strong> @ListGastos.Count</p>
+    </div>
+</div>
+
+
+@code {
+    public Gastos gastos { get; set; } = new Gastos();
+    public List<Gastos> ListGastos { get; set; } = new List<Gastos>();
+    private string filtro = "";
+    private string valorFiltro = "";
+    protected override async Task OnInitializedAsync()
+    {
+        ListGastos = await gastosService.Listar(c => true);
+    }
+    private async Task Buscar()
+    {
+        if (!string.IsNullOrWhiteSpace(valorFiltro))
+        {
+            if (filtro == "Id" && int.TryParse(valorFiltro, out int GastoId))
+            {
+                ListGastos = await gastosService.Listar(g => g.GastoId == GastoId);
+            }
+            else if (filtro == "Concepto")
+            {
+                ListGastos = await gastosService.Listar(g => g.Concepto.ToLower().Contains(valorFiltro.ToLower()));
+            }
+        }
+        else
+        {
+            ListGastos = await gastosService.Listar(u => true);
+        }
+    }
+    public void Crear()
+    {
+        navigation.NavigateTo("/gastos/create");
+    }
+    public Task Editar(int id)
+    {
+        navigation.NavigateTo($"/gastos/edit/{id}");
+        return Task.CompletedTask;
+    }
+    public Task Eliminar(int id)
+    {
+        navigation.NavigateTo($"/gastos/delete/{id}");
+        return Task.CompletedTask;
+    }
+}
