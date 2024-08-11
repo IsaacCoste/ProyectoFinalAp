@@ -1,0 +1,79 @@
+﻿@page "/gastos/delete/{GastoId:int}"
+
+@inject GastosService gastosService
+@inject NavigationManager navigation
+@rendermode InteractiveServer
+
+<PageTitle>Delete Gastos</PageTitle>
+
+<div class="container">
+    <div class="card-header bg-warning text-center">
+        <h1>Eliminar Gastos</h1>
+    </div>
+    <div class="card-body">
+        <h5 class="card-title">Detalles del Gasto</h5>
+        <dl class="row">
+            <div class="row">
+                <dt class="col-sm-3">GastoId:</dt>
+                <dd class="col-sm-9">@gasto.GastoId</dd>
+            </div>
+            <div class="row">
+                <dt class="col-sm-3">CategoriaId:</dt>
+                <dd class="col-sm-9">@gasto.Categoria?.Nombre</dd>
+            </div>
+            <div class="row">
+                <dt class="col-sm-3">Fecha:</dt>
+                <dd class="col-sm-9">@gasto.Fecha</dd>
+            </div>
+            <div class="row">
+                <dt class="col-sm-3">Concepto:</dt>
+                <dd class="col-sm-9">@gasto.Concepto</dd>
+            </div>
+            <div class="row">
+                <dt class="col-sm-3">Monto:</dt>
+                <dd class="col-sm-9">@gasto.Monto</dd>
+            </div>
+        </dl>
+        <div class="card-footer text-center">
+            <button type="button" class="btn btn-danger" @onclick="Eliminar">Eliminar <i class="bi bi-trash3" /></button>
+            <button type="button" class="btn btn-outline-primary" @onclick="Volver">Volver <i class="bi bi-arrow-return-left" /></button>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public int GastoId { get; set; }
+    public Gastos gasto { get; set; } = new Gastos();
+    public List<Categorias> categorias { get; set; } = new List<Categorias>();
+    public List<ToastMessage> messages = new List<ToastMessage>();
+    public void Notificacion(ToastType toastType, string message) => messages.Add(ShowToast(toastType, message));
+    private ToastMessage ShowToast(ToastType toastType, string message)
+    {
+        var mensaje = new ToastMessage()
+            {
+                Type = toastType,
+                Message = $"{message}. El {DateTime.Now.ToString("dd/MM/yyyy")} a las {DateTime.Now.ToString("hh:mm tt")}",
+            };
+        toastService.Notify(mensaje);
+        return mensaje;
+    }
+    protected override async Task OnInitializedAsync()
+    {
+        gasto = await gastosService.Buscar(GastoId);
+        categorias = await gastosService.GetCategorias();
+    }
+    public async Task Eliminar()
+    {
+        await gastosService.Eliminar(gasto);
+        Notificacion(ToastType.Warning, "Gasto eliminado");
+        await Task.Delay(2000);
+        await Volver();
+    }
+
+    public Task Volver()
+    {
+        navigation.NavigateTo("/gastos/index");
+        return Task.CompletedTask;
+    }
+}
